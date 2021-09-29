@@ -22,3 +22,10 @@ JobSerm ระบบจัดหางานออนไลน์สำหรั
  - DB_DATABASE=[your local database name]   
  - DB_USERNAME=[your local database username]   
  - DB_PASSWORD=[your local database password]   
+ 
+# Migration & Seeder
+
+After setup database run the following command   
+
+ 1. To migrate table, run `php artisan migrate`    
+ 2. To seed data into tables, run `php artisan db:seed`   
