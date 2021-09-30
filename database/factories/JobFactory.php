@@ -22,7 +22,7 @@ class JobFactory extends Factory
     public function definition()
     {
         return [
-            'compensation' => $this->faker->randomFloat(2, 1, 8),
+            'compensation' => $this->faker->numberBetween(500, 50000),
             'description' => $this->faker->paragraph(),
             'requirement' => $this->faker->paragraph(),
             'province' => $this->faker->city(),

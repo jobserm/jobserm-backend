@@ -23,7 +23,7 @@ class ReviewFactory extends Factory
     {
         return [
             'comment' => $this->faker->sentence(),
-            'rating' => $this->faker->randomFloat(2, 0, 9),
+            'rating' => $this->faker->randomFloat(2, 0, 5),
         ];
     }
 }
