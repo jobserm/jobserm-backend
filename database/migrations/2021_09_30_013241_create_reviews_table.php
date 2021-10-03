@@ -16,7 +16,7 @@ class CreateReviewsTable extends Migration
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->text('comment');
+            $table->text('comment')->nullable();
             $table->float('rating', 4, 2);
             $table->softDeletes();
         });
