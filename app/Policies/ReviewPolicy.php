@@ -41,7 +41,7 @@ class ReviewPolicy
      */
     public function create(User $user)
     {
-        return $user->isRole("ADMIN") or $user->isRole("EMPLOYER");
+        return $user->isAdmin() or $user->isEmployer();
     }
 
     /**
@@ -65,7 +65,7 @@ class ReviewPolicy
      */
     public function delete(User $user, Review $review)
     {
-        return $user->isRole("ADMIN");
+        return $user->isAdmin();
     }
 
     /**
@@ -77,7 +77,7 @@ class ReviewPolicy
      */
     public function restore(User $user, Review $review)
     {
-        return $user->isRole("ADMIN"); //?
+        return $user->isAdmin(); //?
     }
 
     /**
@@ -89,6 +89,6 @@ class ReviewPolicy
      */
     public function forceDelete(User $user, Review $review)
     {
-        return $user->isRole("ADMIN"); //?
+        return $user->isAdmin(); 
     }
 }
