@@ -25,11 +25,12 @@ class ReviewController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
     public function store(ReviewRequest $request)
     {
+        $this->authorize('create', Review::class); //??
         $review = new Review();
         $user = JWTAuth::user();
         $review->comment = $request->input('comment');
@@ -43,19 +44,20 @@ class ReviewController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Review  $review
+     * @param \App\Models\Review $review
      * @return Review
      */
     public function show(Review $review)
     {
+        $this->authorize('view', $review);
         return $review;
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Review  $review
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\Review $review
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Review $review, $id)
@@ -66,13 +68,16 @@ class ReviewController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Review  $review
+     * @param \App\Models\Review $review
      * @return \Illuminate\Http\RedirectResponse
      */
     public function destroy(Review $review)
     {
-        return $review->delete();
-        return redirect()->refresh(); // not sure
+        $this->authorize('delete', $review);
+        $review->delete();
+
+        return response()->json(['message' => 'Successfully deleted',]);
+
     }
 
 //    public function averageRating($user_id, $data) {
