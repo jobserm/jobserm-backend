@@ -53,7 +53,7 @@ class User extends Authenticatable implements JWTSubject
     }
 
     public function isRole($role) :bool {
-        return $this->role() === $role;
+        return $this->role === $role;
     }
 
     public function isAdmin() :bool {

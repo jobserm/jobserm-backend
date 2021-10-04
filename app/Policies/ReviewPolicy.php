@@ -89,6 +89,6 @@ class ReviewPolicy
      */
     public function forceDelete(User $user, Review $review)
     {
-        return $user->isAdmin(); 
+        return $user->isAdmin();
     }
 }
