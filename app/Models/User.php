@@ -12,6 +12,10 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    public function jobs(){ //user post many jobs
+        return $this->belongsToMany(Job::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *
