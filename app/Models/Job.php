@@ -23,7 +23,8 @@ class Job extends Model implements JWTSubject
     }
 
     public function users(){
-        return $this->belongsToMany(User::class);
+        return $this->belongsToMany(User::class)
+            ->withTimestamps();
     }
 
     public function user(){
@@ -31,7 +32,8 @@ class Job extends Model implements JWTSubject
     }
 
     public function categories(){
-        return $this->belongsToMany(Category::class);
+        return $this->belongsToMany(Category::class)
+            ->withTimestamps();
     }
 
 }

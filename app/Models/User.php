@@ -11,12 +11,6 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
-
-    public function jobs(){ //user post many jobs
-        return $this->belongsToMany(Job::class);
-    }
-
     /**
      * The attributes that are mass assignable.
      *
