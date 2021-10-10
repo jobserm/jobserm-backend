@@ -22,6 +22,9 @@ Route::apiResource('jobs',\App\Http\Controllers\Api\JobController::class);
 
 Route::apiResource('reviews', \App\Http\Controllers\Api\ReviewController::class)
     ->middleware('auth:api');
+
+Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class);
+
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
@@ -32,3 +35,4 @@ Route::group([
     Route::post('refresh', [\App\Http\Controllers\Api\AuthController::class, 'refresh']);
     Route::post('me', [\App\Http\Controllers\Api\AuthController::class, 'me']);
 });
+
