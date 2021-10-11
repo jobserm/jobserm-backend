@@ -17,9 +17,10 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('lastname');
-            $table->unsignedTinyInteger('age');
-            $table->enum('role', ['ADMIN', 'FREELANCER', 'EMPLOYER'])
-                ->default('FREELANCER');
+            $table->date('birthdate');
+            $table->string('gender');
+            $table->enum('role', ['ADMIN', 'USER'])
+                ->default('USER');
             $table->string('phone', 20);
             $table->text('address');
             $table->string('facebook')->nullable();
