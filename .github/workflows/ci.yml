@@ -14,7 +14,9 @@ jobs:
       - name: Deploy
         uses: okteto/okteto:1.13.4
         env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          ENV_FILE: ${{ secrets.ENV_FILE }}
           OKTETO_TOKEN: ${{ secrets.OKTETO_TOKEN }}
-        run: okteto namespace && okteto stack deploy
+        run: |
+          echo $ENV_FILE > .env && \
+          okteto namespace && \
+          okteto stack deploy

@@ -27,13 +27,15 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 WORKDIR /var/www
 
 COPY --chown=www-data:www-data . .
-COPY --chown=www-data:www-data .env.example .env
+# COPY --chown=www-data:www-data .env.example .env
 RUN composer install --optimize-autoloader --no-dev
 RUN composer dump-autoload -o
-RUN php artisan key:generate
-RUN php artisan jwt:secret
+
+# Assume APP_KEY is exist in .env file
+# RUN php artisan key:generate
+# RUN php artisan jwt:secret
 RUN php artisan cache:clear
 RUN php artisan config:clear
 
 COPY --from=nodejs /var/app-nodejs ./
-
+# RUN rm .env
