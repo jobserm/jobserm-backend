@@ -20,6 +20,7 @@ class CreateJobUserTable extends Migration
             $table->text('working_status');
             $table->boolean('is_interested');
             $table->boolean('is_selected');
+            $table->string('remark');
             $table->string('receipt');
             $table->timestamps();
         });
