@@ -25,6 +25,8 @@ Route::apiResource('reviews', \App\Http\Controllers\Api\ReviewController::class)
 
 Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class);
 
+Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);
+
 Route::group([
     'middleware' => 'api',
     'prefix' => 'auth'
