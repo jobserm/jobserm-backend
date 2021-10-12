@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+    app:
+        build: .
+        restart: unless-stopped
+        environment:
+            - DB_HOST=${DB_HOST}
+            - DB_PORT=3306
+            - DB_DATABASE=jobserm_backend
+            - DB_USERNAME=root
+            - DB_PASSWORD=${DB_PASSWORD}
+    nginx:
+        image: nginx:1.17-alpine
+        restart: unless-stopped
+        ports:
+            - 80:80
+        volumes:
+            - ./:/var/www
+            - ./tools/default.conf:/etc/nginx/conf.d/default.conf
