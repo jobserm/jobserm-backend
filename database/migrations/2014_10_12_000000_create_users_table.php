@@ -31,7 +31,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->text('about_me');
             $table->text('skill');
-            $table->boolean('activation')->default('TRUE');
+            $table->boolean('activation')->default(true);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
