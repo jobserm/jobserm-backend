@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "main"
+
 env:
   DEPLOYMENT_REPO: jobserm/deployment
 
