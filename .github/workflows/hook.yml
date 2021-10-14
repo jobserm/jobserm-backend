@@ -14,8 +14,9 @@ jobs:
       - name: trigger deployment
         run: |
           curl --request POST \
-            --url https://api.github.com/repos/$DEPLOYMENT_REPO/actions/workflows/ci.yaml/dispatches \
-            --header 'authorization: Bearer ${{ secrets.JOBSERM_PAT }}' \
+            --url https://api.github.com/repos/$DEPLOYMENT_REPO/dispatches \
+            -H 'Accept: application/vnd.github.everest-preview+json' \
             --header 'content-type: application/json' \
+            --u ${{ secrets.JOBSERM_PAT }} \
             --data '{"event_type":"trigger-deployment"}' \
             --fail
