@@ -17,6 +17,6 @@ jobs:
             --url https://api.github.com/repos/$DEPLOYMENT_REPO/dispatches \
             -H 'Accept: application/vnd.github.everest-preview+json' \
             --header 'content-type: application/json' \
-            --u ${{ secrets.JOBSERM_PAT }} \
+            -u ${{ secrets.JOBSERM_PAT }} \
             --data '{"event_type":"trigger-deployment"}' \
             --fail
