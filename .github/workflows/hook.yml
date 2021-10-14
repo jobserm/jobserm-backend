@@ -1,0 +1,21 @@
+name: Hook
+
+on:
+  push:
+    # branches:
+    #   - "main"
+env:
+  DEPLOYMENT_REPO: jobserm/deployment
+
+jobs:
+  trigger-deployment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: trigger deployment
+        run: |
+          curl --request POST \
+            --url https://api.github.com/repos/$DEPLOYMENT_REPO/dispatches \
+            --header 'authorization: Bearer ${{ secrets.JOBSERM_PAT }}' \
+            --header 'content-type: application/json' \
+            --data '{"event_type":"trigger-deployment"}' \
+            --fail
