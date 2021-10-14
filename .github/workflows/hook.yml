@@ -2,8 +2,9 @@ name: Hook
 
 on:
   push:
-    # branches:
-    #   - "main"
+    branches:
+      - "main"
+
 env:
   DEPLOYMENT_REPO: jobserm/deployment
 
