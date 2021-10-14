@@ -8,7 +8,6 @@ use App\Http\Resources\ReviewResource;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
-use \App\Models\User;
 
 class ReviewController extends Controller
 {
@@ -28,7 +27,7 @@ class ReviewController extends Controller
      * Store a newly created resource in storage.
      *
      * @param \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return Review
      */
     public function store(ReviewRequest $request)
     {
@@ -71,7 +70,7 @@ class ReviewController extends Controller
      * Remove the specified resource from storage.
      *
      * @param \App\Models\Review $review
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy(Review $review)
     {
@@ -81,9 +80,4 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Successfully deleted',]);
 
     }
-
-//    public function averageRating($user_id, $data) {
-//        $avg = DB::table('reviews')->avg('rating');
-//        return $avg;
-//    }
 }

@@ -18,6 +18,7 @@ class CreateReviewsTable extends Migration
             $table->timestamps();
             $table->text('comment')->nullable();
             $table->float('rating', 4, 2);
+            $table->foreignIdFor(\App\Models\User::class);
             $table->softDeletes();
         });
     }
