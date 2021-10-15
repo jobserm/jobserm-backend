@@ -59,12 +59,8 @@ class User extends Authenticatable implements JWTSubject
         return $this->isRole('ADMIN');
     }
 
-    public function isFreelancer() :bool {
-        return $this->isRole('FREELANCER');
-    }
-
-    public function isEmployer() :bool {
-        return $this->isRole('EMPLOYER');
+    public function isUser() :bool {
+        return $this->isRole('USER');
     }
 
     public function getJWTIdentifier()

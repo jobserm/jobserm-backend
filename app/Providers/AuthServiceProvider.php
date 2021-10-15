@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Policies\JobPolicy;
 use App\Models\Review;
 use App\Policies\ReviewPolicy;
+use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 
@@ -21,8 +22,8 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         // 'App\Models\Model' => 'App\Policies\ModelPolicy',
         Job::class => JobPolicy::class,
-
         Review::class => ReviewPolicy::class,
+        User::class => UserPolicy::class,
     ];
 
     /**
