@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
@@ -71,5 +72,41 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         //
+    }
+
+    public function firstRegister(Request $request, User $user) {
+        
+        $this->authorize('update', User::class);
+
+        $validator = Validator::make($request->all(), [
+            'birthdate' => ['required', 'string', 'regex:/^[0-9]{4}-[0-9]{2}-[0-9]{2}/'],
+            'gender' => ['required', 'string'],
+            // role,
+            'address' => ['required', 'string'],
+            'facebook' => ['string'],
+            'line' => ['string'],
+            'username' => ['required', 'string', 'unique:App\Models\User,username'],
+            'about_me' => ['required', 'string'],
+            'skill' => ['required', 'string']
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $user->birthdate = $request->input('birthdate');
+        $user->gender = $request->input('gender');
+        $user->address = $request->input('address');
+        $user->facebook = $request->input('facebook');
+        $user->line = $request->input('line');
+        $user->about_me = $request->input('about_me');
+        $user->skill = $request->skill('skill');
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'User successfully registered',
+            'user' => $user
+        ], 201);
     }
 }
