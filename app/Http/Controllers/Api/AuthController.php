@@ -67,6 +67,7 @@ class AuthController extends Controller
             'password' => 'required|string|confirmed|min:8',
             'lastname' => ['required', 'string', 'max:255'],
             'phone' => ['required', 'string', 'min:9', 'max:10', 'regex:/^0[0-9]{9}/'],
+            'username' => ['required', 'string', 'unique:App\Models\User,username'],
         ]);
 
         if($validator->fails()){
@@ -83,15 +84,8 @@ class AuthController extends Controller
         $user->password = Hash::make($request->input("password"));
 //        $user->password_confimation = Hash::make($request->input("password"));
         $user->lastname = $request->input("lastname");
-        $user->birthdate = $request->input("birthdate");
-        $user->gender = $request->input('gender');
         $user->phone = $request->input("phone");
-        $user->address = $request->input("address");
-        $user->facebook = $request->input("facebook");
-        $user->line = $request->input("line");
         $user->username = $request->input("username");
-        $user->about_me = $request->input("about_me");
-        $user->skill = $request->input("skill");
 
         $user->save();
 
