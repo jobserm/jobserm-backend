@@ -20,8 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiResource('jobs',\App\Http\Controllers\Api\JobController::class);
 
-Route::apiResource('reviews', \App\Http\Controllers\Api\ReviewController::class)
-    ->middleware('auth:api');
+Route::apiResource('reviews', \App\Http\Controllers\Api\ReviewController::class);
 
 Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class);
 
