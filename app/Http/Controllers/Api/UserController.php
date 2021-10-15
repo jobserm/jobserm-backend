@@ -75,7 +75,7 @@ class UserController extends Controller
     }
 
     public function firstRegister(Request $request, User $user) {
-        
+
         $this->authorize('update', User::class);
 
         $validator = Validator::make($request->all(), [
@@ -85,7 +85,6 @@ class UserController extends Controller
             'address' => ['required', 'string'],
             'facebook' => ['string'],
             'line' => ['string'],
-            'username' => ['required', 'string', 'unique:App\Models\User,username'],
             'about_me' => ['required', 'string'],
             'skill' => ['required', 'string']
         ]);
