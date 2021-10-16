@@ -33,7 +33,7 @@ RUN composer install --optimize-autoloader --no-dev
 RUN composer dump-autoload -o
 
 COPY --chown=www-data:www-data .env.example .env
-RUN if [[ $CI == "true" ]]; then \
+RUN if $CI == "true" ; then \
     php artisan key:generate && php artisan jwt:secret; \
     else \
         rm .env; \
