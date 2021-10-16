@@ -37,5 +37,4 @@ RUN php artisan cache:clear
 RUN php artisan config:clear
 
 COPY --from=nodejs /var/app-nodejs ./
-COPY --chown=www-data:www-data . .
 
