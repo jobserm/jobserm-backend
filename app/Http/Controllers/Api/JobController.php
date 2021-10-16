@@ -72,6 +72,22 @@ class JobController extends Controller
         return $job;
     }
 
+    private function updateCategory(Job $job, $categoriesWithComma)
+    {
+        if ($categoriesWithComma) {
+            $category_array = [];
+            $categories = explode(",", $categoriesWithComma);
+            foreach ($categories as $category_name) {
+                $category_name = trim($category_name);
+                if ($category_name) {
+                    $category = Category::firstOrCreate(['category_name' => $category_name]);
+                    array_push($category_array, $category->id);
+                }
+            }
+            $job->categories()->sync($category_array);
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -150,27 +166,33 @@ class JobController extends Controller
 
     public function employerSelectFreelancer(Request $request, Job $job) {
 
-        // TODO: authorize by employer's username
+        $this->authorize('update', $job);
+
         $user = User::findOrFail($request->input('id'));
         $job->users()->updateExistingPivot($user->id, ['is_selected' => true]);
+        $job->working_status = "IN PROGRESS";
+        $job->save();
 
         return response()->json(['message' => 'Selected freelancer successfully']);
     }
 
-    private function updateCategory(Job $job, $categoriesWithComma)
-    {
-        if ($categoriesWithComma) {
-            $category_array = [];
-            $categories = explode(",", $categoriesWithComma);
-            foreach ($categories as $category_name) {
-                $category_name = trim($category_name);
-                if ($category_name) {
-                    $category = Category::firstOrCreate(['category_name' => $category_name]);
-                    array_push($category_array, $category->id);
-                }
-            }
-            $job->categories()->sync($category_array);
-        }
+    public function reportInappropriateJob (Request $request, Job $job) {
+
+        $this->authorize('update', $job);
+
+        $job->report += 1;
+        $job->save();
+
+        return response()->json(['Thank you for your feedback!']);
+    }
+
+    public function finishJob (Request $request, Job $job) {
+        $this->authorize('update', $job);
+
+        $job->working_status = "FINISH";
+        $job->save();
+
+        return response()->json(['message' => 'Your job is finished!']);
     }
 
 }

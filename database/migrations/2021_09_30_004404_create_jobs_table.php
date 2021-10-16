@@ -21,6 +21,8 @@ class CreateJobsTable extends Migration
             $table->mediumText('requirement');
             $table->text('province');
             $table->string('title');
+            $table->integer('report')->default(0);
+            $table->enum('working_status', ['AVAILABLE', 'IN PROGRESS', 'FINISH'])->default('AVAILABLE');
             $table->softDeletes();
         });
     }

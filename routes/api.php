@@ -32,8 +32,14 @@ Route::post('/users/{user}/first-register', [\App\Http\Controllers\Api\UserContr
 Route::post('/jobs/{job}/apply-job', [\App\Http\Controllers\Api\JobController::class, 'userApplyJob'])
     ->middleware('api')->name('jobs.userApplyJob');
 
-Route::post('/jobs/{job}/select-freelancer', [\App\Http\Controllers\Api\JobController::class, 'employerSelectFreelancer'])
+Route::put('/jobs/{job}/select-freelancer', [\App\Http\Controllers\Api\JobController::class, 'employerSelectFreelancer'])
     ->middleware('api')->name('jobs.employerSelectFreelancer');
+
+Route::put('/jobs/{job}/report-inappropriate', [\App\Http\Controllers\Api\JobController::class, 'reportInappropriateJob'])
+    ->middleware('api')->name('jobs.reportInappropriateJob');
+
+Route::put('/jobs/{job}/finish-job', [\App\Http\Controllers\Api\JobController::class, 'finishJob'])
+     ->middleware('api')->name('jobs.finishJob');
 
 Route::group([
     'middleware' => 'api',
