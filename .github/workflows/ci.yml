@@ -2,7 +2,6 @@ name: Deploy
 
 on:
   push:
-    branches: [master]
   workflow_dispatch:
 
 jobs:
@@ -11,12 +10,13 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+      - name: copy .env
+        run: cp .env.example .env
+      - run: docker-compose build
       - name: Deploy
-        uses: okteto/okteto:1.13.4
-        env:
-          ENV_FILE: ${{ secrets.ENV_FILE }}
-          OKTETO_TOKEN: ${{ secrets.OKTETO_TOKEN }}
-        run: |
-          echo $ENV_FILE > .env && \
-          okteto namespace && \
-          okteto stack deploy
+        run: docker-compose up -d
+      - run: echo "$(date) Stable test waiting ~1 min" && sleep 60
+      - run: docker-compose ps
+      - run: curl localhost:80
+      - run: docker-compose ps | grep -iE 'exit|restarting' && exit 1
+      - run: docker-compose down
