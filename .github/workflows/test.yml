@@ -7,8 +7,11 @@ on:
       - "main"
   workflow_dispatch:
 
+env:
+  DEPLOYMENT_REPO: jobserm/deployment
+
 jobs:
-  build:
+  build-container-push:
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -30,8 +33,8 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
 
-  test:
-    needs: ["build"]
+  Integration-test:
+    needs: ["build-container-push"]
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -68,3 +71,18 @@ jobs:
       - if: ${{ always() }}
         run: docker-compose down
         continue-on-error: true
+
+  trigger-deployment:
+    needs: ["build-container-push", "Integration-test"]
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - name: trigger deployment
+        run: |
+          curl --request POST \
+            --url https://api.github.com/repos/$DEPLOYMENT_REPO/dispatches \
+            -H 'Accept: application/vnd.github.everest-preview+json' \
+            --header 'content-type: application/json' \
+            -u ${{ secrets.JOBSERM_PAT }} \
+            --data '{"event_type":"trigger-deployment"}' \
+            --fail
