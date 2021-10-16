@@ -3,7 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
@@ -12,9 +16,14 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+//    public function __construct() {
+//        $this->middleware('auth:api');
+//    }
+
     public function index()
     {
-        //
+//        $this->authorize('viewAny', User::class);
+        return User::get();
     }
 
     /**
@@ -31,34 +40,72 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(User $user)
     {
-        //
+//        $this->authorize('view', $user);
+        return new UserResource($user);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, User $user)
     {
-        //
+        $this->authorize('update', User::class); // be right back
+
+        return "update succesfully";
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
         //
+    }
+
+    public function firstRegister(Request $request, User $user) {
+
+        $this->authorize('update', User::class);
+
+        $validator = Validator::make($request->all(), [
+            'birthdate' => ['required', 'string', 'regex:/^[0-9]{4}-[0-9]{2}-[0-9]{2}/'],
+            'gender' => ['required', 'string'],
+            // role,
+            'address' => ['required', 'string'],
+            'facebook' => ['string'],
+            'line' => ['string'],
+            'about_me' => ['required', 'string'],
+            'skill' => ['required', 'string']
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $user->birthdate = $request->input('birthdate');
+        $user->gender = $request->input('gender');
+        $user->address = $request->input('address');
+        $user->facebook = $request->input('facebook');
+        $user->line = $request->input('line');
+        $user->about_me = $request->input('about_me');
+        $user->skill = $request->skill('skill');
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'User successfully registered',
+            'user' => $user
+        ], 201);
     }
 }
