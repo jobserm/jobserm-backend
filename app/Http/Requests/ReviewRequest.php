@@ -32,8 +32,7 @@ class ReviewRequest extends FormRequest
     public function messages()
     {
         return [
-            'required' => 'ต้องการข้อมูลในช่องนี้',
-            'rating.required' => 'ขอความร่วมมือในการให้คะแนน',
+            'rating.required' => 'ขอความร่วมมือในการให้คะแนน'
         ];
     }
 }

@@ -20,10 +20,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::apiResource('jobs',\App\Http\Controllers\Api\JobController::class);
 
-Route::apiResource('reviews', \App\Http\Controllers\Api\ReviewController::class)
-    ->middleware('auth:api');
+Route::apiResource('reviews', \App\Http\Controllers\Api\ReviewController::class);
 
 Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class);
+
+Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);
+Route::post('/users/{user}/first-register', [\App\Http\Controllers\Api\UserController::class, 'firstRegister'])
+    ->middleware('api')->name('users.firstRegister');
 
 Route::group([
     'middleware' => 'api',
