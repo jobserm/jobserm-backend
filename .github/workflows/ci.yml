@@ -29,7 +29,6 @@ jobs:
 
       - id: result
         run: docker-compose ps | grep -iE 'exit|restarting'
-        continue-on-error: true
 
       - if: ${{ steps.result.outcome }} == 'success'
         run: exit 1
