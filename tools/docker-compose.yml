@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  app:
+    image: ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}
+    restart: unless-stopped
+    environment:
+      APP_KEY: ${APP_KEY_TEST}
+      JWT_SECRET: ${JWT_SECRET_TEST}
+
+  nginx:
+    image: nginx:1.17-alpine
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./:/var/www
+      - ./tools/default.conf:/etc/nginx/conf.d/default.conf

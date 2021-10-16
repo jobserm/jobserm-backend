@@ -9,9 +9,9 @@ JobSerm ระบบจัดหางานออนไลน์สำหรั
 **Windows (bash cmd), Linux , and macOS**   
 
  1. `cp .env.example .env` on working directory.   
- 2. rum command `php artisan key:generate`, make sure that APP_KEY in `.env` has value.   
- 3. run command `composer install`   
- 4. run command `composer dump-autoload`   
+ 2. run command `composer install`   
+ 3. run command `composer dump-autoload`   
+ 4. rum command `php artisan key:generate`, make sure that APP_KEY in `.env` has value.   
  5. run command `npm install`   
  6. run command `php artisan serve`, make sure that server runs correctly.   
  
@@ -22,3 +22,10 @@ JobSerm ระบบจัดหางานออนไลน์สำหรั
  - DB_DATABASE=[your local database name]   
  - DB_USERNAME=[your local database username]   
  - DB_PASSWORD=[your local database password]   
+ 
+# Migration & Seeder
+
+After setup database run the following command   
+
+ 1. To migrate table, run `php artisan migrate`    
+ 2. To seed data into tables, run `php artisan db:seed`   
