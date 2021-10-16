@@ -25,8 +25,15 @@ Route::apiResource('reviews', \App\Http\Controllers\Api\ReviewController::class)
 Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::class);
 
 Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);
+
 Route::post('/users/{user}/first-register', [\App\Http\Controllers\Api\UserController::class, 'firstRegister'])
     ->middleware('api')->name('users.firstRegister');
+
+Route::post('/jobs/{job}/apply-job', [\App\Http\Controllers\Api\JobController::class, 'userApplyJob'])
+    ->middleware('api')->name('jobs.userApplyJob');
+
+Route::post('/jobs/{job}/select-freelancer', [\App\Http\Controllers\Api\JobController::class, 'employerSelectFreelancer'])
+    ->middleware('api')->name('jobs.employerSelectFreelancer');
 
 Route::group([
     'middleware' => 'api',
