@@ -20,19 +20,22 @@ jobs:
       - name: Deploy
         run: docker-compose up -d
 
-      - name: "Stable test waiting ~1 min"
-        run: echo "$(date) Stable test waiting ~1 min" && sleep 60
+      - name: "Stable test waiting ~30s"
+        run: echo "$(date) Stable test waiting ~1 min" && sleep 30
 
       - run: docker-compose ps
 
       - run: curl localhost:80
 
-      - run: docker-compose ps | grep -iE 'exit|restarting'
+      - id: result
+        run: docker-compose ps | grep -iE 'exit|restarting'
         continue-on-error: true
 
-      - name: Check on failures
-        if: ${{ success() }}
+      - if: ${{ steps.result.outcome }} == 'success'
         run: exit 1
+
+      - if: ${{ steps.result.outcome }} == 'failure'
+        run: exit 0
 
       - if: ${{ always() }}
         run: docker-compose down
