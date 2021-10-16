@@ -30,7 +30,15 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
 
+  test:
+    needs: ["build"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
       - run: cp -f tools/docker-compose.yml .
+
       - name: Test
         env:
           APP_KEY_TEST: ${{ secrets.APP_KEY_TEST }}
@@ -40,9 +48,8 @@ jobs:
       - name: "Stable test waiting ~30s"
         run: sleep 30
 
-      - run: docker-compose ps
-
-      - run: curl localhost:80
+      - name: curl test
+        run: docker-compose ps && curl localhost:80
 
       - id: result
         run: |
