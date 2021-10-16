@@ -2,6 +2,9 @@ name: Deploy
 
 on:
   push:
+    branches:
+      - "develop"
+      - "main"
   workflow_dispatch:
 
 jobs:
@@ -27,7 +30,7 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
 
-      - run: cp -f .github/workflows/docker-compose.yaml .
+      - run: cp -f tools/docker-compose.yml .
       - name: Test
         env:
           APP_KEY_TEST: ${{ secrets.APP_KEY_TEST }}
