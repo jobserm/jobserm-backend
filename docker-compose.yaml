@@ -4,7 +4,7 @@ services:
   app:
     image: ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}
     restart: unless-stopped
-    environments:
+    environment:
       APP_KEY: ${APP_KEY_TEST}
       JWT_SECRET: ${JWT_SECRET_TEST}
 
