@@ -30,12 +30,9 @@ jobs:
       - run: docker-compose ps | grep -iE 'exit|restarting'
         continue-on-error: true
 
-      - run: |
-          if (( $? == 1 )); then \
-            exit 0;
-          else \
-            exit 1;
-          fi
+      - name: Check on failures
+        if: ${{ success() }}
+        run: exit 1
 
       - if: ${{ always() }}
         run: docker-compose down
