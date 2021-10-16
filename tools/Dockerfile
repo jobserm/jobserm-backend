@@ -26,9 +26,7 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-COPY --chown=www-data:www-data artisan .
-COPY --chown=www-data:www-data composer.json .
-COPY --chown=www-data:www-data composer.lock .
+COPY --chown=www-data:www-data . .
 RUN composer install --optimize-autoloader --no-dev
 RUN composer dump-autoload -o
 
