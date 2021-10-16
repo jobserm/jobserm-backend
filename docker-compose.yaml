@@ -5,6 +5,8 @@ services:
     build:
       context: .
       dockerfile: ./tools/Dockerfile
+      args:
+        CI: ${CI}
     restart: unless-stopped
     env_file: .env
 

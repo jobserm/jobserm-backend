@@ -10,13 +10,24 @@ jobs:
     steps:
       - name: Check out the repo
         uses: actions/checkout@v2
+
       - name: copy .env
         run: cp .env.example .env
-      - run: docker-compose build
+
+      - name: Build
+        run: docker-compose build
+
       - name: Deploy
         run: docker-compose up -d
-      - run: echo "$(date) Stable test waiting ~1 min" && sleep 60
+
+      - name: "Stable test waiting ~1 min"
+        run: echo "$(date) Stable test waiting ~1 min" && sleep 60
+
       - run: docker-compose ps
+
       - run: curl localhost:80
-      - run: docker-compose ps | grep -iE 'exit|restarting' && exit 1
+
+      - if: ${{ always() }}
+        run: docker-compose ps | grep -iE 'exit|restarting' && exit 1
+
       - run: docker-compose down
