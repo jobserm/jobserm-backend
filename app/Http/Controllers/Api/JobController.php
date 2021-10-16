@@ -6,13 +6,19 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\JobRequest;
 use App\Http\Resources\JobCollection;
 use App\Http\Resources\JobResource;
+use App\Models\Category;
 use App\Models\Job;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class JobController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -29,7 +35,7 @@ class JobController extends Controller
      * Store a newly created resource in storage.
      *
      * @param JobRequest $request
-     * @return \Illuminate\Http\Response
+     * @return Job
      */
     public function store(JobRequest $request)
     {
@@ -41,22 +47,45 @@ class JobController extends Controller
 //            'requirement' => ['required'],
 //            'province' => ['required'],
 //        ]);
-        $validator = Validator::make($request->all(),[
-            'title'=>[
-                Rule::unique('jobs'),
-            ],
-        ])->validate();
+//        $validator = Validator::make($request->all(),[
+//            'title'=>[
+//                Rule::unique('jobs'),
+//            ],
+//        ])->validate();
 
-        $jobs = new Job();
-        $jobs->title = $request->input('title');
-        $jobs->description = $request->input('description');
-        $jobs->compensation = $request->input('compensation');
-        $jobs->requirement = $request->input('requirement');
-        $jobs->province = $request->input('province');
-        $jobs->save();
+        // injects employer who owns this job
+        $user = JWTAuth::user();
 
+        $job = new Job();
+        $job->title = $request->input('title');
+        $job->description = $request->input('description');
+        $job->compensation = $request->input('compensation');
+        $job->requirement = $request->input('requirement');
+        $job->province = $request->input('province');
+        $job->user_id = $user->id;
+        $job->save();
+
+        // injects category related to this job
+        // category formats "A, B, C, ..."
         $categories = $request->input('category');
-        return $jobs;
+        $this->updateCategory($job, $categories);
+        return $job;
+    }
+
+    private function updateCategory(Job $job, $categoriesWithComma)
+    {
+        if ($categoriesWithComma) {
+            $category_array = [];
+            $categories = explode(",", $categoriesWithComma);
+            foreach ($categories as $category_name) {
+                $category_name = trim($category_name);
+                if ($category_name) {
+                    $category = Category::firstOrCreate(['category_name' => $category_name]);
+                    array_push($category_array, $category->id);
+                }
+            }
+            $job->categories()->sync($category_array);
+        }
     }
 
     /**
@@ -120,4 +149,50 @@ class JobController extends Controller
         return response()->json(['message' => 'Successfully deleted']);
 
     }
+
+    public function userApplyJob(Request $request, Job $job){
+
+        $user = User::findOrFail($request->input('id'));
+        $userAlreadyApplied =  $job->users()->find($request->input('id'));
+
+        if (!$userAlreadyApplied) {
+            $job->users()->attach($user->id, ['remark' => $request->input('remark')]);
+            return response()->json(['message' => 'สมัครงานเสร็จสิ้น รอการติดต่อกลับจากผู้ว่าจ้าง']);
+        }
+
+        return response()->json(['message' => 'You already applied this job'], 409);
+
+    }
+
+    public function employerSelectFreelancer(Request $request, Job $job) {
+
+        $this->authorize('update', $job);
+
+        $user = User::findOrFail($request->input('id'));
+        $job->users()->updateExistingPivot($user->id, ['is_selected' => true]);
+        $job->working_status = "IN PROGRESS";
+        $job->save();
+
+        return response()->json(['message' => 'Selected freelancer successfully']);
+    }
+
+    public function reportInappropriateJob (Request $request, Job $job) {
+
+        $this->authorize('update', $job);
+
+        $job->report += 1;
+        $job->save();
+
+        return response()->json(['Thank you for your feedback!']);
+    }
+
+    public function finishJob (Request $request, Job $job) {
+        $this->authorize('update', $job);
+
+        $job->working_status = "FINISH";
+        $job->save();
+
+        return response()->json(['message' => 'Your job is finished!']);
+    }
+
 }
