@@ -1,5 +1,3 @@
-ARG CI=false
-
 FROM node:14-alpine as nodejs
 WORKDIR /var/app-nodejs
 COPY package.json .
@@ -28,19 +26,17 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www
 
-COPY --chown=www-data:www-data . .
+COPY --chown=www-data:www-data composer.json .
+COPY --chown=www-data:www-data composer.lock .
 RUN composer install --optimize-autoloader --no-dev
 RUN composer dump-autoload -o
 
-COPY --chown=www-data:www-data .env.example .env
-RUN if test "$CI" = "true" ; then \
-    php artisan key:generate && php artisan jwt:secret; \
-    else \
-        rm .env; \
-    fi
+# COPY --chown=www-data:www-data .env.example .env
+# RUN php artisan key:generate && php artisan jwt:secret
 
 RUN php artisan cache:clear
 RUN php artisan config:clear
 
 COPY --from=nodejs /var/app-nodejs ./
-# RUN rm .env
+COPY --chown=www-data:www-data . .
+

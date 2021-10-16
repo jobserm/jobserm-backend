@@ -2,13 +2,11 @@ version: "3"
 
 services:
   app:
-    build:
-      context: .
-      dockerfile: ./tools/Dockerfile
-      args:
-        CI: ${CI}
+    image: ghcr.io/${GITHUB_REPOSITORY}:${GITHUB_SHA}
     restart: unless-stopped
-    env_file: .env
+    environments:
+      APP_KEY: ${APP_KEY_TEST}
+      JWT_SECRET: ${JWT_SECRET_TEST}
 
   nginx:
     image: nginx:1.17-alpine
