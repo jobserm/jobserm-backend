@@ -27,7 +27,8 @@ jobs:
 
       - run: curl localhost:80
 
-      - if: ${{ always() }}
-        run: docker-compose ps | grep -iE 'exit|restarting' && exit 1
+      - run: docker-compose ps | grep -iE 'exit|restarting' && exit 1
+      - run: exit 0
 
-      - run: docker-compose down
+      - if: ${{ always() }}
+        run: docker-compose down
