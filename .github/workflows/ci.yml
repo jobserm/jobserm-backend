@@ -27,7 +27,8 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
 
-      - name: Deploy
+      - run: cp -f .github/workflows/docker-compose.yaml .
+      - name: Test
         env:
           APP_KEY_TEST: ${{ secrets.APP_KEY_TEST }}
           JWT_SECRET_TEST: ${{ secrets.JWT_SECRET_TEST }}
