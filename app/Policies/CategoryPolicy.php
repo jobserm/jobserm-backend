@@ -18,7 +18,7 @@ class CategoryPolicy
      */
     public function viewAny(User $user)
     {
-        return $user->isAdmin();
+        return true;
     }
 
     /**
@@ -30,7 +30,7 @@ class CategoryPolicy
      */
     public function view(User $user, Category $Category)
     {
-        return $user->isAdmin();
+        return true;
     }
 
     /**
@@ -41,7 +41,7 @@ class CategoryPolicy
      */
     public function create(User $user)
     {
-        return $user->isAdmin();
+        return $user->isUser();
     }
 
     /**
@@ -53,7 +53,7 @@ class CategoryPolicy
      */
     public function update(User $user, Category $Category)
     {
-        return $user->isAdmin();
+        return $user->isUser();
     }
 
     /**
@@ -65,7 +65,7 @@ class CategoryPolicy
      */
     public function delete(User $user, Category $Category)
     {
-        return $user->isAdmin();
+        return $user->isRole('ADMIN') or $user->isRole('USER');
     }
 
     /**
@@ -77,7 +77,7 @@ class CategoryPolicy
      */
     public function restore(User $user, Category $Category)
     {
-        return $user->isAdmin();
+        return $user->isRole('ADMIN');
     }
 
     /**
@@ -89,6 +89,6 @@ class CategoryPolicy
      */
     public function forceDelete(User $user,Category $Category)
     {
-        return $user->isAdmin();
+        return $user->isRole('ADMIN');
     }
 }
