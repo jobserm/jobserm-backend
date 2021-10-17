@@ -36,7 +36,7 @@ class AuthController extends Controller
         }
 
         if (auth()->user()->activation == 0) {
-            return response()->json(['message' => 'Your account has been suspended, contact to system administrator'], 401);
+            return response()->json(['message' => 'Your account has been suspended, contact to system administrator'], 409);
         }
 
         return $this->respondWithToken($token);
