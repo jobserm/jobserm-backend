@@ -1,0 +1,88 @@
+name: Integration test
+
+on:
+  push:
+    branches:
+      - "develop"
+      - "main"
+  workflow_dispatch:
+
+env:
+  DEPLOYMENT_REPO: jobserm/deployment
+
+jobs:
+  build-container-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build container image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./tools/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+  Integration-test:
+    needs: ["build-container-push"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - run: cp -f tools/docker-compose.yml .
+
+      - name: Test
+        env:
+          APP_KEY_TEST: ${{ secrets.APP_KEY_TEST }}
+          JWT_SECRET_TEST: ${{ secrets.JWT_SECRET_TEST }}
+        run: docker-compose up -d
+
+      - name: "Stable test waiting ~30s"
+        run: sleep 30
+
+      - name: curl test
+        run: docker-compose ps && curl localhost:80
+
+      - id: result
+        run: |
+          running="$(docker-compose ps --services --filter "status=running")"
+          services="$(docker-compose ps --services)"
+          if [ "$running" != "$services" ]; then
+              echo "Following services are not running:" 
+              # Bash specific
+              comm -13 <(sort <<<"$running") <(sort <<<"$services")
+              exit 1
+          else
+              echo "All services are running"
+              exit 0
+          fi
+
+      - if: ${{ always() }}
+        run: docker-compose down
+        continue-on-error: true
+
+  trigger-deployment:
+    needs: ["build-container-push", "Integration-test"]
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - name: trigger deployment
+        run: |
+          curl --request POST \
+            --url https://api.github.com/repos/$DEPLOYMENT_REPO/dispatches \
+            -H 'Accept: application/vnd.github.everest-preview+json' \
+            --header 'content-type: application/json' \
+            -u ${{ secrets.JOBSERM_PAT }} \
+            --data '{"event_type":"trigger-deployment"}' \
+            --fail

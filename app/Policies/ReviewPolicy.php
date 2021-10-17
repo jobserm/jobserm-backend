@@ -41,7 +41,7 @@ class ReviewPolicy
      */
     public function create(User $user)
     {
-        return $user->isAdmin() or $user->isEmployer();
+        return $user->isAdmin() or $user->isUser();
     }
 
     /**
