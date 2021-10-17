@@ -35,10 +35,6 @@ jobs:
             ghcr.io/${{ github.repository }}:${{ github.sha }}
           outputs: type=docker,dest=${{ env.CACHE_IMAGE_PATH }}
 
-      - name: Push image
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
-        run: docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
-
       - name: Upload artifact
         uses: actions/upload-artifact@v2
         with:
@@ -67,6 +63,10 @@ jobs:
         run: |
           docker load --input ${{ env.CACHE_IMAGE_PATH }}
           docker image ls -a
+
+      - name: Push image
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
+        run: docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
 
       - name: Test
         env:
