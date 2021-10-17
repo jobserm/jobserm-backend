@@ -35,11 +35,15 @@ Route::post('/jobs/{job}/apply-job', [\App\Http\Controllers\Api\JobController::c
 Route::put('/jobs/{job}/select-freelancer', [\App\Http\Controllers\Api\JobController::class, 'employerSelectFreelancer'])
     ->middleware('api')->name('jobs.employerSelectFreelancer');
 
-Route::put('/jobs/{job}/report-inappropriate', [\App\Http\Controllers\Api\JobController::class, 'reportInappropriateJob'])
+Route::get('/jobs/{job}/report-inappropriate', [\App\Http\Controllers\Api\JobController::class, 'reportInappropriateJob'])
     ->middleware('api')->name('jobs.reportInappropriateJob');
 
-Route::put('/jobs/{job}/finish-job', [\App\Http\Controllers\Api\JobController::class, 'finishJob'])
+Route::get('/jobs/{job}/finish-job', [\App\Http\Controllers\Api\JobController::class, 'finishJob'])
      ->middleware('api')->name('jobs.finishJob');
+
+Route::get('/get-all-jobs', [\App\Http\Controllers\Api\JobController::class, 'getAllJobs'])
+     ->middleware('api')->name('jobs.getAllJobs');
+
 
 Route::group([
     'middleware' => 'api',
