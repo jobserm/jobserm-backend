@@ -41,7 +41,7 @@ class CategoryPolicy
      */
     public function create(User $user)
     {
-        return $user->isRole('EMPLOYER');
+        return $user->isUser();
     }
 
     /**
@@ -53,7 +53,7 @@ class CategoryPolicy
      */
     public function update(User $user, Category $Category)
     {
-        return $user->isRole('EMPLOYER');
+        return $user->isUser();
     }
 
     /**
@@ -65,7 +65,7 @@ class CategoryPolicy
      */
     public function delete(User $user, Category $Category)
     {
-        return $user->isRole('ADMIN');
+        return $user->isRole('ADMIN') or $user->isRole('USER');
     }
 
     /**
