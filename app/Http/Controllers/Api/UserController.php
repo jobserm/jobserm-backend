@@ -86,7 +86,7 @@ class UserController extends Controller
             'facebook' => ['string'],
             'line' => ['string'],
             'about_me' => ['required', 'string'],
-            'skill' => ['required', 'string']
+            'skill' => ['required', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -99,7 +99,8 @@ class UserController extends Controller
         $user->facebook = $request->input('facebook');
         $user->line = $request->input('line');
         $user->about_me = $request->input('about_me');
-        $user->skill = $request->skill('skill');
+        $user->skill = $request->input('skill');
+        $user->is_publish = $request->input('is_publish');
 
         $user->save();
 
@@ -108,5 +109,5 @@ class UserController extends Controller
             'user' => $user
         ], 201);
     }
-    
+
 }
