@@ -41,7 +41,7 @@ class JobPolicy
      */
     public function create(User $user)
     {
-        return $user->isRole('EMPLOYER');
+        return $user->isUser();
     }
 
     /**
@@ -53,7 +53,7 @@ class JobPolicy
      */
     public function update(User $user, Job $job)
     {
-        return $user->isRole('EMPLOYER');
+        return $user->isRole('USER');
     }
 
     /**
@@ -65,7 +65,7 @@ class JobPolicy
      */
     public function delete(User $user, Job $job)
     {
-        return $user->isRole('ADMIN');
+        return $user->isRole('ADMIN') or $user->isRole('USER');
     }
 
     /**

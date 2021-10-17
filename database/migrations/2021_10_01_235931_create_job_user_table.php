@@ -17,7 +17,8 @@ class CreateJobUserTable extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Job::class);
             $table->foreignIdFor(\App\Models\User::class);
-            $table->string('remark');
+            $table->string('remark')->nullable();
+            $table->boolean('is_selected')->default(false);
             $table->timestamps();
         });
     }
