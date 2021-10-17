@@ -6,6 +6,8 @@ on:
 
 env:
   DEPLOYMENT_REPO: jobserm/deployment
+  CACHE_IMAGE_KEY: cache-docker-image
+  CACHE_IMAGE_PATH: /tmp/myimage.tar
 
 jobs:
   build-container-push:
@@ -16,6 +18,7 @@ jobs:
 
       - name: Log in to GitHub Docker Registry
         uses: docker/login-action@v1
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
@@ -29,6 +32,13 @@ jobs:
           push: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
           tags: |
             ghcr.io/${{ github.repository }}:${{ github.sha }}
+          outputs: type=docker,dest=${{ env.CACHE_IMAGE_PATH }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CACHE_IMAGE_KEY }}
+          path: ${{ env.CACHE_IMAGE_PATH }}
 
   Integration-test:
     needs: ["build-container-push"]
@@ -37,8 +47,18 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v2
 
-      - if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
-        run: cp -f tools/docker-compose.yml .
+      - run: cp -f tools/docker-compose.yml .
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.CACHE_IMAGE_KEY }}
+          path: /tmp
+
+      - name: Load Docker image
+        run: |
+          docker load --input ${{ env.CACHE_IMAGE_PATH }}
+          docker image ls -a
 
       - name: Test
         env:
