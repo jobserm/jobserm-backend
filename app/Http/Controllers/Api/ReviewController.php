@@ -80,4 +80,10 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Successfully deleted',]);
 
     }
+
+    public function avgRating()
+    {
+        $avg_rating = Review::avg('rating');
+        return $avg_rating;
+    }
 }
