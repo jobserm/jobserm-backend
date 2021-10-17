@@ -27,9 +27,9 @@ class Job extends Model implements JWTSubject
             ->withTimestamps();
     }
 
-    public function user(){
-        return $this->belongsTo(User::class);
-    }
+//    public function user(){
+//        return $this->belongsTo(User::class);
+//    }
 
     public function categories(){
         return $this->belongsToMany(Category::class)
