@@ -16,9 +16,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-//    public function __construct() {
-//        $this->middleware('auth:api');
-//    }
+    public function __construct() {
+        $this->middleware('auth:api');
+    }
 
     public function index()
     {
@@ -74,13 +74,16 @@ class UserController extends Controller
         //
     }
 
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function firstRegister(Request $request, User $user) {
 
-        $this->authorize('update', User::class);
+        $this->authorize('update', $user);
 
         $validator = Validator::make($request->all(), [
             'birthdate' => ['required', 'string', 'regex:/^[0-9]{4}-[0-9]{2}-[0-9]{2}/'],
-            'gender' => ['required', 'string'],
+//            'gender' => ['required', 'string'],
             // role,
             'address' => ['required', 'string'],
             'facebook' => ['string'],
@@ -100,7 +103,7 @@ class UserController extends Controller
         $user->line = $request->input('line');
         $user->about_me = $request->input('about_me');
         $user->skill = $request->input('skill');
-        $user->is_publish = $request->input('is_publish');
+        $user->is_publish = $request->input('is_publish') || 0;
 
         $user->save();
 
