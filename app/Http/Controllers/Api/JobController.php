@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JobRequest;
-use App\Http\Resources\JobCollection;
 use App\Http\Resources\JobResource;
 use App\Models\Category;
 use App\Models\Job;
@@ -40,13 +39,17 @@ class JobController extends Controller
     public function store(JobRequest $request)
     {
         $this->authorize('create',Job::class);
-//        $validated = $request->validate([
-//            'title' => ['required'],
-//            'description' => ['required'],
-//            'compensation' => ['required'],
-//            'requirement' => ['required'],
-//            'province' => ['required'],
-//        ]);
+        $validated = $request->validate([
+            'title' => ['required'],
+            'description' => ['required'],
+            'compensation' => ['required'],
+            'requirement' => ['required'],
+            'province' => ['required'],
+        ]);
+
+        if ($validated->fails()) {
+            return response()->json($validated->errors()->toJson(), 400);
+        }
 //        $validator = Validator::make($request->all(),[
 //            'title'=>[
 //                Rule::unique('jobs'),
