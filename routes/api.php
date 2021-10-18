@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::apiResource('jobs',\App\Http\Controllers\Api\JobController::class);
+Route::apiResource('reviews', \App\Http\Controllers\Api\ReviewController::class)
+    ->middleware('auth:api');
 
 Route::apiResource('jobs',\App\Http\Controllers\Api\JobController::class);
 
@@ -46,6 +49,9 @@ Route::get('/jobs/{job}/finish-job', [\App\Http\Controllers\Api\JobController::c
 Route::get('/get-all-jobs', [\App\Http\Controllers\Api\JobController::class, 'getAllJobs'])
      ->middleware('api')->name('jobs.getAllJobs');
 
+ Route::post('/jobs/{job}/get-rand-jobs', [\App\Http\Controllers\Api\JobController::class, 'getRandJobs'])
+     ->middleware('api')->name('jobs.getRandJobs');
+
 
 Route::group([
     'middleware' => 'api',
@@ -56,5 +62,5 @@ Route::group([
     Route::post('logout', [\App\Http\Controllers\Api\AuthController::class, 'logout']);
     Route::post('refresh', [\App\Http\Controllers\Api\AuthController::class, 'refresh']);
     Route::post('me', [\App\Http\Controllers\Api\AuthController::class, 'me']);
-});
 
+});
