@@ -26,6 +26,8 @@ Route::apiResource('categories', \App\Http\Controllers\Api\CategoryController::c
 
 Route::apiResource('users', \App\Http\Controllers\Api\UserController::class);
 
+Route::apiResource('images', \App\Http\Controllers\Api\ImageController::class);
+
 Route::post('/users/{user}/first-register', [\App\Http\Controllers\Api\UserController::class, 'firstRegister'])
     ->middleware('api')->name('users.firstRegister');
 

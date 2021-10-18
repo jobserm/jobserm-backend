@@ -36,4 +36,8 @@ class Job extends Model implements JWTSubject
             ->withTimestamps();
     }
 
+    public function images() {
+        return $this->hasMany(Image::class);
+    }
+
 }
