@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ReviewRequest extends FormRequest
+class CategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,15 +24,14 @@ class ReviewRequest extends FormRequest
     public function rules()
     {
         return [
-            'comment' => ['required'],
-            'rating' => ['required'],
+            'category_name' => ['required']
         ];
     }
-
+    
     public function messages()
     {
         return [
-            'rating.required' => 'ขอความร่วมมือในการให้คะแนน'
+            'category_name.required' => 'category name is required',
         ];
     }
 }

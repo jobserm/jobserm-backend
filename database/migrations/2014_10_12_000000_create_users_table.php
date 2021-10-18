@@ -17,19 +17,22 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('lastname');
-            $table->unsignedTinyInteger('age');
-            $table->enum('role', ['ADMIN', 'FREELANCER', 'EMPLOYER'])
-                ->default('FREELANCER');
+            $table->date('birthdate')->nullable();
+            $table->string('gender')->nullable();
+            $table->enum('role', ['ADMIN', 'USER'])
+                ->default('USER');
             $table->string('phone', 20);
-            $table->text('address');
+            $table->text('address')->nullable();
             $table->string('facebook')->nullable();
             $table->string('line')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('username')->unique();
             $table->string('password');
-            $table->text('about_me');
-            $table->text('skill');
+            $table->text('about_me')->nullable();
+            $table->text('skill')->nullable();
+            $table->boolean('activation')->default(true);
+            $table->boolean('is_publish')->default(false);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

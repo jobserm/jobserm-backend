@@ -1,0 +1,115 @@
+name: Integration test
+
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  DEPLOYMENT_REPO: jobserm/deployment
+  CACHE_IMAGE_KEY: cache-docker-image
+  CACHE_IMAGE_PATH: /tmp/myimage.tar
+
+jobs:
+  build-container-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Build container image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./
+          file: ./tools/Dockerfile
+          tags: |
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
+          outputs: type=docker,dest=${{ env.CACHE_IMAGE_PATH }}
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{ env.CACHE_IMAGE_KEY }}
+          path: ${{ env.CACHE_IMAGE_PATH }}
+
+  Integration-test:
+    needs: ["build-container-push"]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - run: cp -f tools/docker-compose.yml .
+
+      - name: Download artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ env.CACHE_IMAGE_KEY }}
+          path: /tmp
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+
+      - name: Load Docker image
+        run: |
+          docker load --input ${{ env.CACHE_IMAGE_PATH }}
+          docker image ls -a
+
+      - name: Log in to GitHub Docker Registry
+        uses: docker/login-action@v1
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Push image
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop' }}
+        run: docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+      - name: Test
+        env:
+          APP_KEY_TEST: ${{ secrets.APP_KEY_TEST }}
+          JWT_SECRET_TEST: ${{ secrets.JWT_SECRET_TEST }}
+        run: docker-compose up -d
+
+      - name: "Stable test waiting ~30s"
+        run: sleep 30
+
+      - name: curl test
+        run: docker-compose ps && curl localhost:80
+
+      - id: result
+        run: |
+          running="$(docker-compose ps --services --filter "status=running")"
+          services="$(docker-compose ps --services)"
+          if [ "$running" != "$services" ]; then
+              echo "Following services are not running:" 
+              # Bash specific
+              comm -13 <(sort <<<"$running") <(sort <<<"$services")
+              exit 1
+          else
+              echo "All services are running"
+              exit 0
+          fi
+
+      - if: ${{ always() }}
+        run: docker-compose down
+        continue-on-error: true
+
+  trigger-deployment:
+    needs: ["build-container-push", "Integration-test"]
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - name: trigger deployment
+        run: |
+          curl --request POST \
+            --url https://api.github.com/repos/$DEPLOYMENT_REPO/dispatches \
+            -H 'Accept: application/vnd.github.everest-preview+json' \
+            --header 'content-type: application/json' \
+            -u ${{ secrets.JOBSERM_PAT }} \
+            --data '{"event_type":"trigger-deployment"}' \
+            --fail

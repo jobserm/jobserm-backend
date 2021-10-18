@@ -4,9 +4,8 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class JobResource extends JsonResource
+class CategoryResource extends JsonResource
 {
-//    public static $wrap = 'job';
     /**
      * Transform the resource into an array.
      *
@@ -17,15 +16,9 @@ class JobResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'compensation' => $this->compensation,
-            'description' => $this->description,
-            'requirement' => $this->requirement,
-            'province' => $this->province,
-            'title' => $this->title,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'users' => UserResource::collection($this->users)
-//            'jobs' => $this->whenLoaded('jobs')
+            'category_name' => $this->category_name
         ];
     }
 }

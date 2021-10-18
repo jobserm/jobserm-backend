@@ -17,10 +17,8 @@ class CreateJobUserTable extends Migration
             $table->id();
             $table->foreignIdFor(\App\Models\Job::class);
             $table->foreignIdFor(\App\Models\User::class);
-            $table->text('working_status');
-            $table->boolean('is_interested');
-            $table->boolean('is_selected');
-            $table->string('receipt');
+            $table->string('remark')->nullable();
+            $table->boolean('is_selected')->default(false);
             $table->timestamps();
         });
     }

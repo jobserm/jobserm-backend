@@ -2,11 +2,10 @@
 
 namespace App\Policies;
 
-use App\Models\Review;
 use App\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class ReviewPolicy
+class UserPolicy
 {
     use HandlesAuthorization;
 
@@ -18,19 +17,19 @@ class ReviewPolicy
      */
     public function viewAny(User $user)
     {
-        return true;
+        return $user->isAdmin();
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Review  $review
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function view(User $user, Review $review)
+    public function view(User $user, User $model)
     {
-        return true;
+        return $user->isAdmin();
     }
 
     /**
@@ -41,29 +40,29 @@ class ReviewPolicy
      */
     public function create(User $user)
     {
-        return $user->isAdmin() or $user->isUser();
+        return $user->isAdmin();
     }
 
     /**
      * Determine whether the user can update the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Review  $review
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function update(User $user, Review $review)
+    public function update(User $user, User $model)
     {
-        //
+        return $user->isAdmin() or $user->isUser();
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Review  $review
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function delete(User $user, Review $review)
+    public function delete(User $user, User $model)
     {
         return $user->isAdmin();
     }
@@ -72,23 +71,23 @@ class ReviewPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Review  $review
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function restore(User $user, Review $review)
+    public function restore(User $user, User $model)
     {
-        return $user->isAdmin(); //?
+        //
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\Models\User  $user
-     * @param  \App\Models\Review  $review
+     * @param  \App\Models\User  $model
      * @return \Illuminate\Auth\Access\Response|bool
      */
-    public function forceDelete(User $user, Review $review)
+    public function forceDelete(User $user, User $model)
     {
-        return $user->isAdmin();
+        //
     }
 }
