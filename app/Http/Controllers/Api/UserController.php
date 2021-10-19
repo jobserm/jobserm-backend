@@ -60,6 +60,8 @@ class UserController extends Controller
     {
         $this->authorize('update', User::class); // be right back
 
+        // update user
+
         return "update succesfully";
     }
 
@@ -112,9 +114,16 @@ class UserController extends Controller
             'user' => $user
         ], 201);
     }
-//
-//    public function publishMeToAllFreelance () {
-//        $users =
-//    }
 
+    public function toggleActivation(Request $request, User $user) {
+
+        $this->authorize('update', $user);
+
+        $user->activation = $user->activation === 1 ? 0 : 1;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Successfully activate/deactivate account'
+        ]);
+    }
 }
