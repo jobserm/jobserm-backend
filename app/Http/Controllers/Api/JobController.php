@@ -169,7 +169,7 @@ class JobController extends Controller
 
     public function employerSelectFreelancer(Request $request, Job $job) {
 
-        $this->authorize('update', $job);
+//        $this->authorize('update', $job);
 
         $user = User::findOrFail($request->input('id'));
         $job->users()->updateExistingPivot($user->id, ['is_selected' => true]);
@@ -190,7 +190,7 @@ class JobController extends Controller
     }
 
     public function finishJob (Request $request, Job $job) {
-        $this->authorize('update', $job);
+//        $this->authorize('update', $job);
 
         $job->working_status = "FINISH";
         $job->save();
