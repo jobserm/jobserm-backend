@@ -31,6 +31,7 @@ class JobResource extends JsonResource
             'users' => UserResource::collection($this->users),
             'freelancer_count' => $users,
             'report' => $this->report,
+            'working_status' => $this->working_status,
 //            'jobs' => $this->whenLoaded('jobs')
         ];
     }
