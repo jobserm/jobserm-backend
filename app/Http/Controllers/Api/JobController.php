@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JobRequest;
-use App\Http\Resources\JobCollection;
 use App\Http\Resources\JobResource;
 use App\Models\Category;
 use App\Models\Job;
@@ -16,9 +15,9 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class JobController extends Controller
 {
-//    public function __construct() {
-//        $this->middleware('auth:api');
-//    }
+    public function __construct() {
+        $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -40,13 +39,17 @@ class JobController extends Controller
     public function store(JobRequest $request)
     {
         $this->authorize('create',Job::class);
-//        $validated = $request->validate([
-//            'title' => ['required'],
-//            'description' => ['required'],
-//            'compensation' => ['required'],
-//            'requirement' => ['required'],
-//            'province' => ['required'],
-//        ]);
+        $validated = $request->validate([
+            'title' => ['required'],
+            'description' => ['required'],
+            'compensation' => ['required'],
+            'requirement' => ['required'],
+            'province' => ['required'],
+        ]);
+
+//        if ($validated->fails()) {
+//            return response()->json($validated->errors()->toJson(), 400);
+//        }
 //        $validator = Validator::make($request->all(),[
 //            'title'=>[
 //                Rule::unique('jobs'),
@@ -166,7 +169,7 @@ class JobController extends Controller
 
     public function employerSelectFreelancer(Request $request, Job $job) {
 
-        $this->authorize('update', $job);
+//        $this->authorize('update', $job);
 
         $user = User::findOrFail($request->input('id'));
         $job->users()->updateExistingPivot($user->id, ['is_selected' => true]);
@@ -187,7 +190,7 @@ class JobController extends Controller
     }
 
     public function finishJob (Request $request, Job $job) {
-        $this->authorize('update', $job);
+//        $this->authorize('update', $job);
 
         $job->working_status = "FINISH";
         $job->save();
@@ -196,7 +199,7 @@ class JobController extends Controller
     }
 
     public function getAllJobs () {
-        return Job::get();
+        return JobResource::collection(Job::get());
     }
 
     public function getRandJobs (Request $request) {

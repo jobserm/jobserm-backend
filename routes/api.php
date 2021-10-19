@@ -55,6 +55,13 @@ Route::get('/get-all-jobs', [\App\Http\Controllers\Api\JobController::class, 'ge
  Route::post('/get-job-by-user-id', [\App\Http\Controllers\Api\JobController::class, 'getJobByUser'])
      ->middleware('api')->name('jobs.getJobByUser');
 
+Route::get('/users/{user}/toggle-activation', [\App\Http\Controllers\Api\UserController::class, 'toggleActivation'])
+    ->middleware('api')->name('users.toggleActivation');
+
+Route::get('/images/{id}', [\App\Http\Controllers\Api\ImageController::class, 'getImageByJobId'])
+    ->middleware('api')->name('images.getImageByJobId');
+
+
 
 Route::group([
     'middleware' => 'api',
