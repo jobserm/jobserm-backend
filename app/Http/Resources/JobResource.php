@@ -32,6 +32,7 @@ class JobResource extends JsonResource
             'freelancer_count' => $users,
             'report' => $this->report,
             'working_status' => $this->working_status,
+            'user_id' => $this->user_id,
 //            'jobs' => $this->whenLoaded('jobs')
         ];
     }
