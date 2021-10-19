@@ -33,10 +33,10 @@ class ReviewController extends Controller
     {
         $this->authorize('create', Review::class); //??
         $review = new Review();
-        $user = JWTAuth::user();
+//        $user = JWTAuth::user();
         $review->comment = $request->input('comment');
         $review->rating = $request->input('rating');
-        $review->user_id = $user->id;
+        $review->user_id = $request->input('id');
 
         $review->save();
         return $review;
