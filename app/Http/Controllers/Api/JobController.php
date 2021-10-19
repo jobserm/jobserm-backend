@@ -15,9 +15,9 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class JobController extends Controller
 {
-//    public function __construct() {
-//        $this->middleware('auth:api');
-//    }
+    public function __construct() {
+        $this->middleware('auth:api');
+    }
     /**
      * Display a listing of the resource.
      *
@@ -47,9 +47,7 @@ class JobController extends Controller
             'province' => ['required'],
         ]);
 
-        if ($validated->fails()) {
-            return response()->json($validated->errors()->toJson(), 400);
-        }
+
 //        $validator = Validator::make($request->all(),[
 //            'title'=>[
 //                Rule::unique('jobs'),
