@@ -52,6 +52,9 @@ Route::get('/get-all-jobs', [\App\Http\Controllers\Api\JobController::class, 'ge
  Route::post('/jobs/{job}/get-rand-jobs', [\App\Http\Controllers\Api\JobController::class, 'getRandJobs'])
      ->middleware('api')->name('jobs.getRandJobs');
 
+ Route::post('/get-job-by-user-id', [\App\Http\Controllers\Api\JobController::class, 'getJobByUser'])
+     ->middleware('api')->name('jobs.getJobByUser');
+
 
 Route::group([
     'middleware' => 'api',

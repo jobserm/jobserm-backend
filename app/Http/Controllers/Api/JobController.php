@@ -203,4 +203,9 @@ class JobController extends Controller
         $id = $request->input("id");
         return Job::where('id','!=', $id)->inRandomOrder()->get();
     }
+
+    public function getJobByUser (Request $request) {
+        $id = $request->input("id");
+        return Job::where('user_id','=', $id)->get();
+    }
 }
