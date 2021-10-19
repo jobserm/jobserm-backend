@@ -199,7 +199,7 @@ class JobController extends Controller
     }
 
     public function getAllJobs () {
-        return Job::get();
+        return JobResource::collection(Job::get());
     }
 
     public function getRandJobs (Request $request) {
