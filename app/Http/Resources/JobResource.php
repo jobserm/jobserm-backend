@@ -27,7 +27,7 @@ class JobResource extends JsonResource
             'title' => $this->title,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'job_owner' => $user->name,
+            'job_owner' => User::where('id', '=', $this->id)->get(),
             'users' => UserResource::collection($this->users),
             'freelancer_count' => $users,
             'report' => $this->report,
