@@ -158,7 +158,7 @@ class JobController extends Controller
         $user = User::findOrFail($request->input('id'));
         $userAlreadyApplied =  $job->users()->find($request->input('id'));
 
-        if (!$userAlreadyApplied) {
+        if (is_null($userAlreadyApplied)) {
             $job->users()->attach($user->id, ['remark' => $request->input('remark')]);
             return response()->json(['message' => 'สมัครงานเสร็จสิ้น รอการติดต่อกลับจากผู้ว่าจ้าง']);
         }
