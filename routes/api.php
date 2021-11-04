@@ -64,6 +64,9 @@ Route::get('/users/{user}/toggle-activation', [\App\Http\Controllers\Api\UserCon
 Route::get('/images/{id}', [\App\Http\Controllers\Api\ImageController::class, 'getImageByJobId'])
     ->middleware('api')->name('images.getImageByJobId');
 
+Route::get('/get-user-is-publish', [\App\Http\Controllers\Api\UserController::class, 'getUserIsPublish'])
+     ->middleware('api')->name('users.getUserIsPublish');
+
 
 
 Route::group([

@@ -126,4 +126,8 @@ class UserController extends Controller
             'message' => 'Successfully activate/deactivate account'
         ]);
     }
+
+    public function getUserIsPublish() {
+        return User::get()->where('is_publish', 0);
+    }
 }
