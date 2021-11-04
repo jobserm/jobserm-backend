@@ -47,7 +47,9 @@ class JobController extends Controller
             'province' => ['required'],
         ]);
 
-
+//        if ($validated->fails()) {
+//            return response()->json($validated->errors()->toJson(), 400);
+//        }
 //        $validator = Validator::make($request->all(),[
 //            'title'=>[
 //                Rule::unique('jobs'),
@@ -156,7 +158,7 @@ class JobController extends Controller
         $user = User::findOrFail($request->input('id'));
         $userAlreadyApplied =  $job->users()->find($request->input('id'));
 
-        if (!$userAlreadyApplied) {
+        if (is_null($userAlreadyApplied)) {
             $job->users()->attach($user->id, ['remark' => $request->input('remark')]);
             return response()->json(['message' => 'สมัครงานเสร็จสิ้น รอการติดต่อกลับจากผู้ว่าจ้าง']);
         }
@@ -167,7 +169,7 @@ class JobController extends Controller
 
     public function employerSelectFreelancer(Request $request, Job $job) {
 
-        $this->authorize('update', $job);
+//        $this->authorize('update', $job);
 
         $user = User::findOrFail($request->input('id'));
         $job->users()->updateExistingPivot($user->id, ['is_selected' => true]);
@@ -188,7 +190,7 @@ class JobController extends Controller
     }
 
     public function finishJob (Request $request, Job $job) {
-        $this->authorize('update', $job);
+//        $this->authorize('update', $job);
 
         $job->working_status = "FINISH";
         $job->save();
@@ -204,4 +206,15 @@ class JobController extends Controller
         $id = $request->input("id");
         return Job::where('id','!=', $id)->inRandomOrder()->get();
     }
+
+    public function getJobByUser (Request $request) {
+        $id = $request->input("id");
+        return Job::where('user_id','=', $id)->get();
+    }
+
+        public function getJobFromSearch (Request $request){
+            $province = $request->input("province");
+            $jobs = Job::where('province','=',$province)->paginate(4);
+            return JobResource::collection($jobs);
+        }
 }

@@ -48,7 +48,7 @@ class CategoryController extends Controller
        $category->save();
 
        $jobs = $request->input('job');
-       return $categories;
+       return $category;
     }
 
     /**
