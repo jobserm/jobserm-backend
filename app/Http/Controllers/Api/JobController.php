@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JobRequest;
-use App\Http\Resources\JobCollection;
 use App\Http\Resources\JobResource;
 use App\Models\Category;
 use App\Models\Job;
@@ -40,13 +39,17 @@ class JobController extends Controller
     public function store(JobRequest $request)
     {
         $this->authorize('create',Job::class);
-//        $validated = $request->validate([
-//            'title' => ['required'],
-//            'description' => ['required'],
-//            'compensation' => ['required'],
-//            'requirement' => ['required'],
-//            'province' => ['required'],
-//        ]);
+        $validated = $request->validate([
+            'title' => ['required'],
+            'description' => ['required'],
+            'compensation' => ['required'],
+            'requirement' => ['required'],
+            'province' => ['required'],
+        ]);
+
+//        if ($validated->fails()) {
+//            return response()->json($validated->errors()->toJson(), 400);
+//        }
 //        $validator = Validator::make($request->all(),[
 //            'title'=>[
 //                Rule::unique('jobs'),
@@ -155,7 +158,7 @@ class JobController extends Controller
         $user = User::findOrFail($request->input('id'));
         $userAlreadyApplied =  $job->users()->find($request->input('id'));
 
-        if (!$userAlreadyApplied) {
+        if (is_null($userAlreadyApplied)) {
             $job->users()->attach($user->id, ['remark' => $request->input('remark')]);
             return response()->json(['message' => 'สมัครงานเสร็จสิ้น รอการติดต่อกลับจากผู้ว่าจ้าง']);
         }
@@ -166,7 +169,7 @@ class JobController extends Controller
 
     public function employerSelectFreelancer(Request $request, Job $job) {
 
-        $this->authorize('update', $job);
+//        $this->authorize('update', $job);
 
         $user = User::findOrFail($request->input('id'));
         $job->users()->updateExistingPivot($user->id, ['is_selected' => true]);
@@ -187,12 +190,35 @@ class JobController extends Controller
     }
 
     public function finishJob (Request $request, Job $job) {
-        $this->authorize('update', $job);
+//        $this->authorize('update', $job);
 
         $job->working_status = "FINISH";
         $job->save();
 
-        return response()->json(['message' => 'Your job is finished!']);
+        return response()->json(['message' => 'Your job is finished!', $job->users]);
     }
 
+    public function getAllJobs () {
+        return JobResource::collection(Job::get());
+    }
+
+    public function getRandJobs (Request $request) {
+        $id = $request->input("id");
+        return Job::where('id','!=', $id)->inRandomOrder()->get();
+    }
+
+    public function getJobByUser (Request $request) {
+        $id = $request->input("id");
+        $jobs = Job::where('user_id','=', $id)->get();
+//        $jobs = Job::where('user_id','=', $id)->paginate(4);
+        return JobResource::collection($jobs);
+    }
+
+        public function getJobFromSearch (Request $request){
+            $province = $request->input("province");
+            $title = $request->input("title");
+
+            $jobs = Job::where('title','like',$title)->where('province','like',$province)->paginate(4);
+            return JobResource::collection($jobs);
+        }
 }

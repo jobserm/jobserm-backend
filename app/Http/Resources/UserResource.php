@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Review;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -15,6 +16,7 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'lastname' => $this->lastname,
             'email' => $this->email,
@@ -24,7 +26,8 @@ class UserResource extends JsonResource
             'address' => $this->address,
             'facebook' => $this->facebook,
             'line' => $this->line,
-            'activation' => $this->activation
+            'activation' => $this->activation,
+            'review' => Review::where('user_id', '=', $this->id)->avg('rating')
         ];
     }
 }

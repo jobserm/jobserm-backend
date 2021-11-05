@@ -31,12 +31,12 @@ class ReviewController extends Controller
      */
     public function store(ReviewRequest $request)
     {
-        $this->authorize('create', Review::class); //??
+//        $this->authorize('create', Review::class); //??
         $review = new Review();
-        $user = JWTAuth::user();
+//        $user = JWTAuth::user();
         $review->comment = $request->input('comment');
         $review->rating = $request->input('rating');
-        $review->user_id = $user->id;
+        $review->user_id = $request->input('id');
 
         $review->save();
         return $review;
@@ -80,4 +80,5 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Successfully deleted',]);
 
     }
+
 }
