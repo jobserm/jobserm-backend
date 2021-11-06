@@ -73,6 +73,9 @@ Route::get('/images/{id}', [\App\Http\Controllers\Api\ImageController::class, 'g
 Route::get('/get-user-is-publish', [\App\Http\Controllers\Api\UserController::class, 'getUserIsPublish'])
      ->middleware('api')->name('users.getUserIsPublish');
 
+ Route::get('/reviews/get-review-by-user-id/{id}', [\App\Http\Controllers\Api\ReviewController::class, 'getReviewByUserID'])
+     ->middleware('api')->name('reviews.getReviewByUserID');
+
 
 
 Route::group([
