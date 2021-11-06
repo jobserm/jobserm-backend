@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ReviewRequest;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -79,6 +80,10 @@ class ReviewController extends Controller
 
         return response()->json(['message' => 'Successfully deleted',]);
 
+    }
+
+    public function getReviewByUserID($id) {
+        return Review::get()->where('user_id', $id);
     }
 
 }
