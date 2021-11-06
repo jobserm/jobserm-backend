@@ -209,12 +209,16 @@ class JobController extends Controller
 
     public function getJobByUser (Request $request) {
         $id = $request->input("id");
-        return Job::where('user_id','=', $id)->get();
+        $jobs = Job::where('user_id','=', $id)->get();
+//        $jobs = Job::where('user_id','=', $id)->paginate(4);
+        return JobResource::collection($jobs);
     }
 
         public function getJobFromSearch (Request $request){
             $province = $request->input("province");
-            $jobs = Job::where('province','=',$province)->paginate(4);
+            $title = $request->input("title");
+
+            $jobs = Job::where('title','like',$title)->where('province','like',$province)->paginate(4);
             return JobResource::collection($jobs);
         }
 }

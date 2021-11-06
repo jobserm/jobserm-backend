@@ -16,9 +16,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-//    public function __construct() {
-//        $this->middleware('auth:api');
-//    }
+    public function __construct() {
+        $this->middleware('auth:api');
+    }
 
     public function index()
     {
@@ -99,7 +99,7 @@ class UserController extends Controller
         }
 
         $user->birthdate = $request->input('birthdate');
-        $user->gender = $request->input('gender');
+        // $user->gender = $request->input('gender');
         $user->address = $request->input('address');
         $user->facebook = $request->input('facebook');
         $user->line = $request->input('line');
