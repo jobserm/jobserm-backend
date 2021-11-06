@@ -99,7 +99,7 @@ class UserController extends Controller
         }
 
         $user->birthdate = $request->input('birthdate');
-        $user->gender = $request->input('gender');
+        // $user->gender = $request->input('gender');
         $user->address = $request->input('address');
         $user->facebook = $request->input('facebook');
         $user->line = $request->input('line');
