@@ -21,11 +21,12 @@ class UserResource extends JsonResource
             'lastname' => $this->lastname,
             'email' => $this->email,
             'birthdate' => $this->birthdate,
-            'gender' => $this->gender,
             'phone' => $this->phone,
             'address' => $this->address,
             'facebook' => $this->facebook,
             'line' => $this->line,
+            'about_me' => $this->about_me,
+            'skill' => $this->skill,
             'activation' => $this->activation,
             'review' => Review::where('user_id', '=', $this->id)->avg('rating')
         ];
