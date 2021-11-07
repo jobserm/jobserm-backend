@@ -128,7 +128,7 @@ class UserController extends Controller
     }
 
     public function getUserIsPublish() {
-        $users = User::get()->where('is_publish', 0);
+        $users = User::get()->where('is_publish', 1);
         return UserResource::collection($users);
     }
 }
