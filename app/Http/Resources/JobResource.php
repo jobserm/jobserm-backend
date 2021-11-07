@@ -36,7 +36,7 @@ class JobResource extends JsonResource
             'working_status' => $this->working_status,
             'user_id' => $this->user_id,
             'catagory' => Category::where('id', '=', $this->id)->get(),
-            'category_name' => $category_name,
+            'category_name' => $this->categories,
 
 //            'jobs' => $this->whenLoaded('jobs')
         ];
