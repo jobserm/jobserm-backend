@@ -210,9 +210,29 @@ class JobController extends Controller
 
     public function getJobByUser (Request $request) {
         $id = $request->input("id");
-        $jobs = Job::where('user_id','=', $id)->get();
-//        $jobs = Job::where('user_id','=', $id)->paginate(4);
-        return JobResource::collection($jobs);
+        $working_status = $request->input("working_status");
+        if($working_status === 'ALL')
+        {
+            $jobs = Job::where('user_id','=', $id)->get();
+            return JobResource::collection($jobs);
+
+        }
+        elseif ($working_status === 'AVAILABLE')
+        {
+            $jobs = Job::where('user_id','=', $id)->where('working_status','=',1)->get();
+            return JobResource::collection($jobs);
+        }
+        elseif ($working_status === "IN PROGRESS")
+        {
+            $jobs = Job::where('user_id','=', $id)->where('working_status','=',2)->get();
+            return JobResource::collection($jobs);
+        }elseif ($working_status === "FINISH")
+        {
+            $jobs = Job::where('user_id','=', $id)->where('working_status','=',3)->get();
+            return JobResource::collection($jobs);
+        }
+
+
     }
 
     public function getAllAvaliableJobWithoutUserLogedIn (Request $request) {
