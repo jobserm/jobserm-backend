@@ -168,7 +168,6 @@ class JobController extends Controller
     }
 
     public function employerSelectFreelancer(Request $request, Job $job) {
-        
 //        $this->authorize('update', $job);
 
         $user = User::findOrFail($request->input('id'));
@@ -227,20 +226,20 @@ class JobController extends Controller
         return JobResource::collection($jobs);
     }
 
-        public function getJobFromSearch (Request $request){
-            $province = $request->input("province");
-            $title = $request->input("title");
-            $compen = $request->input("compen");
-            $check = $request->input("check");
-            if($check === 0) {
+    public function getJobFromSearch (Request $request){
+        $province = $request->input("province");
+        $title = $request->input("title");
+        $compen = $request->input("compen");
+        $check = $request->input("check");
+        if($check === 0) {
 
 
-                $jobs = Job::where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->whereBetween('compensation', $compen)->paginate(4);
-                return JobResource::collection($jobs);
-            }
-            elseif($check === 1){
-                $jobs = Job::where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->paginate(4);
-                return JobResource::collection($jobs);
-            }
+            $jobs = Job::where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->whereBetween('compensation', $compen)->paginate(4);
+            return JobResource::collection($jobs);
         }
+        elseif($check === 1){
+            $jobs = Job::where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->paginate(4);
+            return JobResource::collection($jobs);
+        }
+    }
 }

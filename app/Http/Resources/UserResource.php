@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Job;
 use App\Models\Review;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -28,6 +29,7 @@ class UserResource extends JsonResource
             'about_me' => $this->about_me,
             'skill' => $this->skill,
             'activation' => $this->activation,
+            'info' => $this->jobs,
             'review' => Review::where('user_id', '=', $this->id)->avg('rating')
         ];
     }
