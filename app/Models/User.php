@@ -48,7 +48,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function jobs() {
         return $this->belongsToMany(Job::class)
-            ->withTimestamps();
+            ->withTimestamps()->withPivot('is_selected','remark');
     }
 
     public function isRole($role) :bool {

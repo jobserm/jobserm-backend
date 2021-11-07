@@ -28,8 +28,9 @@ class UserResource extends JsonResource
             'about_me' => $this->about_me,
             'skill' => $this->skill,
             'activation' => $this->activation,
-            'review' => Review::where('user_id', '=', $this->id)->avg('rating')
-
+            'review' => Review::where('user_id', '=', $this->id)->avg('rating'),
+            'is_selected' => $this->pivot->is_selected,
+            'remark' => $this->pivot->remark
         ];
     }
 }

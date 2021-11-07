@@ -168,7 +168,7 @@ class JobController extends Controller
     }
 
     public function employerSelectFreelancer(Request $request, Job $job) {
-        
+
 //        $this->authorize('update', $job);
 
         $user = User::findOrFail($request->input('id'));
