@@ -204,7 +204,9 @@ class JobController extends Controller
 
     public function getRandJobs (Request $request) {
         $id = $request->input("id");
-        return Job::where('id','!=', $id)->inRandomOrder()->get();
+        $user = JWTAuth::user();
+
+        return Job::where('id','!=', $id)->where('user_id','!=',$user->id)->where('working_status','=',1)->inRandomOrder()->get();
     }
 
     public function getJobByUser (Request $request) {
@@ -222,7 +224,7 @@ class JobController extends Controller
 
     public function getJobAvaliableWithoutUserLogedIn (Request $request) {
         $id = $request->input("id");
-        $jobs = Job::where('user_id','!=', $id)->where('working_status','=',1)->paginate(4);
+        $jobs = Job::where('user_id','!=', $id)->where('working_status','=',1)->get();
 //        $jobs = Job::where('user_id','=', $id)->paginate(4);
         return JobResource::collection($jobs);
     }
@@ -235,11 +237,11 @@ class JobController extends Controller
             if($check === 0) {
 
 
-                $jobs = Job::where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->whereBetween('compensation', $compen)->paginate(4);
+                $jobs = Job::where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->whereBetween('compensation', $compen)->get();
                 return JobResource::collection($jobs);
             }
             elseif($check === 1){
-                $jobs = Job::where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->paginate(4);
+                $jobs = Job::where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->get();
                 return JobResource::collection($jobs);
             }
         }
