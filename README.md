@@ -3,6 +3,14 @@
 Web Technology and Web Service 01418442: Final project   
 JobSerm ระบบจัดหางานออนไลน์สำหรับฟรีแลนซ์   
 
+# Team Members
+1. Patipan Boomnsimma 6210400710
+2. Kanravee Warinsirikul 6210402348
+3. Jinna Chodchoy 6210402364
+4. Pirapat Jitcharoenwirakun 6210402470
+5. Itsaraphap Sakulwong 6210406769
+6. Thanakorn Wongsanit 6210407960
+7. Kanita Wansang 6210450431
 
 # Installation
 
