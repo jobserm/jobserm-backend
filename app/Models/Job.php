@@ -24,7 +24,7 @@ class Job extends Model implements JWTSubject
 
     public function users(){
         return $this->belongsToMany(User::class)
-            ->withTimestamps();
+            ->withTimestamps()->withPivot('is_selected','remark');
     }
 
 //    public function user(){
@@ -34,6 +34,10 @@ class Job extends Model implements JWTSubject
     public function categories(){
         return $this->belongsToMany(Category::class)
             ->withTimestamps();
+    }
+
+    public function images() {
+        return $this->hasMany(Image::class);
     }
 
 }

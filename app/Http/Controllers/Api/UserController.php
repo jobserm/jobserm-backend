@@ -60,6 +60,8 @@ class UserController extends Controller
     {
         $this->authorize('update', User::class); // be right back
 
+        // update user
+
         return "update succesfully";
     }
 
@@ -74,19 +76,22 @@ class UserController extends Controller
         //
     }
 
+    /**
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
     public function firstRegister(Request $request, User $user) {
 
-        $this->authorize('update', User::class);
+        $this->authorize('update', $user);
 
         $validator = Validator::make($request->all(), [
             'birthdate' => ['required', 'string', 'regex:/^[0-9]{4}-[0-9]{2}-[0-9]{2}/'],
-            'gender' => ['required', 'string'],
+//            'gender' => ['required', 'string'],
             // role,
             'address' => ['required', 'string'],
             'facebook' => ['string'],
             'line' => ['string'],
             'about_me' => ['required', 'string'],
-            'skill' => ['required', 'string']
+            'skill' => ['required', 'string'],
         ]);
 
         if ($validator->fails()) {
@@ -94,12 +99,13 @@ class UserController extends Controller
         }
 
         $user->birthdate = $request->input('birthdate');
-        $user->gender = $request->input('gender');
+        // $user->gender = $request->input('gender');
         $user->address = $request->input('address');
         $user->facebook = $request->input('facebook');
         $user->line = $request->input('line');
         $user->about_me = $request->input('about_me');
-        $user->skill = $request->skill('skill');
+        $user->skill = $request->input('skill');
+        $user->is_publish = $request->input('is_publish') || 0;
 
         $user->save();
 
@@ -108,5 +114,21 @@ class UserController extends Controller
             'user' => $user
         ], 201);
     }
-    
+
+    public function toggleActivation(Request $request, User $user) {
+
+        $this->authorize('update', $user);
+
+        $user->activation = $user->activation === 1 ? 0 : 1;
+        $user->save();
+
+        return response()->json([
+            'message' => 'Successfully activate/deactivate account'
+        ]);
+    }
+
+    public function getUserIsPublish() {
+        $users = User::get()->where('is_publish', 1);
+        return UserResource::collection($users);
+    }
 }

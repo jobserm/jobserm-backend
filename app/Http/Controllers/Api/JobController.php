@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\JobRequest;
-use App\Http\Resources\JobCollection;
 use App\Http\Resources\JobResource;
 use App\Models\Category;
 use App\Models\Job;
@@ -40,13 +39,17 @@ class JobController extends Controller
     public function store(JobRequest $request)
     {
         $this->authorize('create',Job::class);
-//        $validated = $request->validate([
-//            'title' => ['required'],
-//            'description' => ['required'],
-//            'compensation' => ['required'],
-//            'requirement' => ['required'],
-//            'province' => ['required'],
-//        ]);
+        $validated = $request->validate([
+            'title' => ['required'],
+            'description' => ['required'],
+            'compensation' => ['required'],
+            'requirement' => ['required'],
+            'province' => ['required'],
+        ]);
+
+//        if ($validated->fails()) {
+//            return response()->json($validated->errors()->toJson(), 400);
+//        }
 //        $validator = Validator::make($request->all(),[
 //            'title'=>[
 //                Rule::unique('jobs'),
@@ -155,7 +158,7 @@ class JobController extends Controller
         $user = User::findOrFail($request->input('id'));
         $userAlreadyApplied =  $job->users()->find($request->input('id'));
 
-        if (!$userAlreadyApplied) {
+        if (is_null($userAlreadyApplied)) {
             $job->users()->attach($user->id, ['remark' => $request->input('remark')]);
             return response()->json(['message' => 'สมัครงานเสร็จสิ้น รอการติดต่อกลับจากผู้ว่าจ้าง']);
         }
@@ -165,8 +168,7 @@ class JobController extends Controller
     }
 
     public function employerSelectFreelancer(Request $request, Job $job) {
-
-        $this->authorize('update', $job);
+//        $this->authorize('update', $job);
 
         $user = User::findOrFail($request->input('id'));
         $job->users()->updateExistingPivot($user->id, ['is_selected' => true]);
@@ -187,12 +189,110 @@ class JobController extends Controller
     }
 
     public function finishJob (Request $request, Job $job) {
-        $this->authorize('update', $job);
+//        $this->authorize('update', $job);
 
         $job->working_status = "FINISH";
         $job->save();
 
-        return response()->json(['message' => 'Your job is finished!']);
+        return response()->json(['message' => 'Your job is finished!', $job->users]);
     }
 
+    public function getAllJobs () {
+        return JobResource::collection(Job::get());
+    }
+
+    public function getRandJobs (Request $request) {
+        $id = $request->input("id");
+        $user = JWTAuth::user();
+
+        return Job::where('id','!=', $id)->where('user_id','!=',$user->id)->where('working_status','=',1)->inRandomOrder()->get();
+    }
+
+    public function getJobByUser (Request $request) {
+        $id = $request->input("id");
+        $working_status = $request->input("working_status");
+        if($working_status === 'ALL')
+        {
+            $jobs = Job::where('user_id','=', $id)->get();
+            return JobResource::collection($jobs);
+
+        }
+        elseif ($working_status === 'AVAILABLE')
+        {
+            $jobs = Job::where('user_id','=', $id)->where('working_status','=',1)->get();
+            return JobResource::collection($jobs);
+        }
+        elseif ($working_status === "IN PROGRESS")
+        {
+            $jobs = Job::where('user_id','=', $id)->where('working_status','=',2)->get();
+            return JobResource::collection($jobs);
+        }elseif ($working_status === "FINISH")
+        {
+            $jobs = Job::where('user_id','=', $id)->where('working_status','=',3)->get();
+            return JobResource::collection($jobs);
+        }
+
+    }
+
+    public function getJobThatUserApply (Request $request) {
+
+
+        $id = $request->input("id");
+        $working_status = $request->input("working_status");
+        $user = User::findOrFail($id);
+        $jobs = $user->jobs;
+        if($working_status === 'ALL')
+        {
+            return JobResource::collection($jobs);
+
+        }
+        elseif ($working_status === 'AVAILABLE')
+        {
+            $jobs = $jobs->where('working_status','=',"AVAILABLE");
+            return JobResource::collection($jobs);
+        }
+        elseif ($working_status === "IN PROGRESS")
+        {
+            $jobs = $jobs->where('working_status','=',"IN PROGRESS");
+            return JobResource::collection($jobs);
+        }elseif ($working_status === "FINISH")
+        {
+            $jobs = $jobs->where('working_status','=',"FINISH");
+
+            return JobResource::collection($jobs);
+        }
+
+
+    }
+
+    public function getAllAvaliableJobWithoutUserLogedIn (Request $request) {
+        $id = $request->input("id");
+        $jobs = Job::where('user_id','!=', $id)->where('working_status','=',1)->get();
+        return JobResource::collection($jobs);
+    }
+
+    public function getJobAvaliableWithoutUserLogedIn (Request $request) {
+        $id = $request->input("id");
+        $jobs = Job::where('user_id','!=', $id)->where('working_status','=',1)->get();
+//        $jobs = Job::where('user_id','=', $id)->paginate(4);
+        return JobResource::collection($jobs);
+    }
+
+    public function getJobFromSearch (Request $request){
+        $province = $request->input("province");
+        $title = $request->input("title");
+        $compensation = $request->input("compen");
+        $check = $request->input("check");
+        $id = $request->input("user_id");
+        if($check === 0) {
+
+
+            $jobs = Job::where('user_id','!=',$id)->where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->whereBetween('compensation', $compensation)->paginate(4);
+            return JobResource::collection($jobs);
+        }
+        elseif($check === 1){
+            $jobs = Job::where('user_id','!=',$id)->where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->paginate(4);
+            return JobResource::collection($jobs);
+        }
+    }
 }

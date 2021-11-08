@@ -165,6 +165,7 @@ return [
         /*
          * Package Service Providers...
          */
+        Matthewbdaly\LaravelAzureStorage\AzureStorageServiceProvider::class,
 
         /*
          * Application Service Providers...

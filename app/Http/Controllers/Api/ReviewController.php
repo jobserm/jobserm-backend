@@ -6,11 +6,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\ReviewRequest;
 use App\Http\Resources\ReviewResource;
 use App\Models\Review;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ReviewController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth:api');
+    }
 
     /**
      * Display a listing of the resource.
@@ -31,12 +35,12 @@ class ReviewController extends Controller
      */
     public function store(ReviewRequest $request)
     {
-        $this->authorize('create', Review::class); //??
+//        $this->authorize('create', Review::class); //??
         $review = new Review();
-        $user = JWTAuth::user();
+//        $user = JWTAuth::user();
         $review->comment = $request->input('comment');
         $review->rating = $request->input('rating');
-        $review->user_id = $user->id;
+        $review->user_id = $request->input('id');
 
         $review->save();
         return $review;
@@ -80,4 +84,9 @@ class ReviewController extends Controller
         return response()->json(['message' => 'Successfully deleted',]);
 
     }
+
+    public function getReviewByUserID($id) {
+        return Review::get()->where('user_id', $id);
+    }
+
 }

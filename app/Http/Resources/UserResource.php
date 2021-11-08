@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Job;
+use App\Models\Review;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -15,16 +17,20 @@ class UserResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'name' => $this->name,
             'lastname' => $this->lastname,
             'email' => $this->email,
             'birthdate' => $this->birthdate,
-            'gender' => $this->gender,
             'phone' => $this->phone,
             'address' => $this->address,
             'facebook' => $this->facebook,
             'line' => $this->line,
-            'activation' => $this->activation
+            'about_me' => $this->about_me,
+            'skill' => $this->skill,
+            'activation' => $this->activation,
+            'info' => $this->jobs,
+            'review' => Review::where('user_id', '=', $this->id)->avg('rating')
         ];
     }
 }
