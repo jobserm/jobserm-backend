@@ -160,7 +160,7 @@ class JobController extends Controller
 
         if (is_null($userAlreadyApplied)) {
             $job->users()->attach($user->id, ['remark' => $request->input('remark')]);
-            return response()->json(['message' => 'สมัครงานเสร็จสิ้น รอการติดต่อกลับจากผู้ว่าจ้าง']);
+            return response()->json(['message' => 'สมัครงานเสร็จสิ้น รอการติดต่อกลับจากผู้ว่าจ้าง',$job]);
         }
 
         return response()->json(['message' => 'You already applied this job'], 409);
