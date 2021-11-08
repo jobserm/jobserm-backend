@@ -79,10 +79,11 @@ Route::post('/images/uploadProfile/{id}', [\App\Http\Controllers\Api\ImageContro
 Route::get('/get-user-is-publish', [\App\Http\Controllers\Api\UserController::class, 'getUserIsPublish'])
      ->middleware('api')->name('users.getUserIsPublish');
 
- Route::get('/reviews/get-review-by-user-id/{id}', [\App\Http\Controllers\Api\ReviewController::class, 'getReviewByUserID'])
+Route::get('/reviews/get-review-by-user-id/{id}', [\App\Http\Controllers\Api\ReviewController::class, 'getReviewByUserID'])
      ->middleware('api')->name('reviews.getReviewByUserID');
 
-
+Route::post('/users/get-all-users', [\App\Http\Controllers\Api\UserController::class, 'getAllUsers'])
+     ->middleware('api')->name('users.getAllUsers');
 
 Route::group([
     'middleware' => 'api',
