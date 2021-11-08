@@ -131,4 +131,10 @@ class UserController extends Controller
         $users = User::get()->where('is_publish', 1);
         return UserResource::collection($users);
     }
+
+    public function getAllUsers(Request $request) {
+        $users = User::whereRole('USER')->get();
+
+        return $users;
+    }
 }
