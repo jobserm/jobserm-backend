@@ -83,7 +83,7 @@ class ImageController extends Controller
     }
 
     public function getImageByJobId($id) {
-        $image = Image::where('job_id', '=', 1)->get();
+        $image = Image::where('job_id', '=', $id)->get();
         return $image;
     }
 
