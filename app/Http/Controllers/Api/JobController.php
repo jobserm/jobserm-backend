@@ -232,6 +232,36 @@ class JobController extends Controller
             return JobResource::collection($jobs);
         }
 
+    }
+
+    public function getJobThatUserApply (Request $request) {
+
+
+        $id = $request->input("id");
+        $working_status = $request->input("working_status");
+        $user = User::findOrFail($id);
+        $jobs = $user->jobs;
+        if($working_status === 'ALL')
+        {
+            return JobResource::collection($jobs);
+
+        }
+        elseif ($working_status === 'AVAILABLE')
+        {
+            $jobs = $jobs->where('working_status','=',"AVAILABLE");
+            return JobResource::collection($jobs);
+        }
+        elseif ($working_status === "IN PROGRESS")
+        {
+            $jobs = $jobs->where('working_status','=',"IN PROGRESS");
+            return JobResource::collection($jobs);
+        }elseif ($working_status === "FINISH")
+        {
+            $jobs = $jobs->where('working_status','=',"FINISH");
+
+            return JobResource::collection($jobs);
+        }
+
 
     }
 
@@ -251,16 +281,17 @@ class JobController extends Controller
     public function getJobFromSearch (Request $request){
         $province = $request->input("province");
         $title = $request->input("title");
-        $compen = $request->input("compen");
+        $compensation = $request->input("compen");
         $check = $request->input("check");
+        $id = $request->input("user_id");
         if($check === 0) {
 
 
-            $jobs = Job::where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->whereBetween('compensation', $compen)->paginate(4);
+            $jobs = Job::where('user_id','!=',$id)->where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->whereBetween('compensation', $compensation)->paginate(4);
             return JobResource::collection($jobs);
         }
         elseif($check === 1){
-            $jobs = Job::where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->paginate(4);
+            $jobs = Job::where('user_id','!=',$id)->where('title', 'like', $title)->where('province', 'like', $province)->where('working_status','=',1)->paginate(4);
             return JobResource::collection($jobs);
         }
     }

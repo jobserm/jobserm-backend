@@ -55,6 +55,9 @@ Route::get('/get-all-jobs', [\App\Http\Controllers\Api\JobController::class, 'ge
  Route::post('/get-job-by-user-id', [\App\Http\Controllers\Api\JobController::class, 'getJobByUser'])
      ->middleware('api')->name('jobs.getJobByUser');
 
+ Route::post('/get-job-apply', [\App\Http\Controllers\Api\JobController::class, 'getJobThatUserApply'])
+     ->middleware('api')->name('jobs.getJobThatUserApply');
+
  Route::post('/jobs/get-all-avaliable-jobs-not-log-in', [\App\Http\Controllers\Api\JobController::class, 'getAllAvaliableJobWithoutUserLogedIn'])
      ->middleware('api')->name('jobs.getAllAvaliableJobWithoutUserLogedIn');
 
