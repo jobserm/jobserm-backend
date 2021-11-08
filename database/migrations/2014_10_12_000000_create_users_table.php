@@ -32,6 +32,7 @@ class CreateUsersTable extends Migration
             $table->text('skill')->nullable();
             $table->boolean('activation')->default(true);
             $table->boolean('is_publish')->default(false);
+            $table->string('img_url')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Image;
 use App\Models\Job;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -84,5 +85,18 @@ class ImageController extends Controller
     public function getImageByJobId($id) {
         $image = Image::where('job_id', '=', 1)->get();
         return $image;
+    }
+
+    public function uploadProfile(Request $request, $id) {
+        $user = JWTAuth::user();
+        $file = $request->photo->getClientOriginalName();
+        $fileName = pathinfo($file, PATHINFO_FILENAME);
+        $filePath = $request->photo->store('/' . "jobserm-" . $user->username . '/profile', 'azure');
+
+        $user = User::findOrFail($id);
+        $user->img_url = Storage::disk('azure')->url($filePath);
+        $user->save();
+
+        return response()->json(['image' => $user->img_url]);
     }
 }

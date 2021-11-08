@@ -9,10 +9,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model
 {
     use HasFactory, SoftDeletes;
-    
+
     protected $fillable = ['category_name'];
 
     public function jobs() {
-        return $this->belongsToMany(Job::class)->withTimestamps();
+        return $this->belongsToMany(Job::class)->withTimestamps()->withPivot('job_id');
     }
 }

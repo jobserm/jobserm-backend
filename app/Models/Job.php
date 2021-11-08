@@ -33,11 +33,12 @@ class Job extends Model implements JWTSubject
 
     public function categories(){
         return $this->belongsToMany(Category::class)
-            ->withTimestamps();
+            ->withTimestamps()->withPivot('category_id');
     }
 
     public function images() {
         return $this->hasMany(Image::class);
     }
+
 
 }
