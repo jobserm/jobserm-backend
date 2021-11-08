@@ -1,6 +1,6 @@
 # JobSerm [backend-Laravel framework]
 
-Web Technology and Web Service 01418442: Final project   
+Web Technology and Web Service 01418442 & Introduction Software Engineering 01418471 : Final project\
 JobSerm ระบบจัดหางานออนไลน์สำหรับฟรีแลนซ์   
 
 # Team Members
