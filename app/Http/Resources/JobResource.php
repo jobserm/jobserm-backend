@@ -18,14 +18,18 @@ class JobResource extends JsonResource
      */
     public function toArray($request)
     {
-        $user = User::find($this->id);
         $users = UserResource::collection($this->users)->count();
-        $category_name = Category::where('id', '=', $this->id)->value('category_name');
         $image = Image::where('job_id', '=', $this->id)->get();
-        $selected = [];
+        $selected = "";
+        $freelancer_name = "ยังไม่มีผู้รับงาน";
+        $category_name = "ยังไม่ถูกจัดหมวดหมู่";
+        foreach ($this->categories as $category) {
+            $category_name = $category->category_name;
+        }
         foreach ($this->users as $user) {
             if ($user->pivot->is_selected === 1) {
-                array_push($selected, $user);
+                $selected = $user;
+                $freelancer_name = $selected->name . ' ' . $selected->lastname;
             }
         }
 
@@ -48,6 +52,8 @@ class JobResource extends JsonResource
             'category_name' => $this->categories,
             'image' => $image,
             'selected_user' => $selected,
+            'selected_user_admin' => $freelancer_name,
+            'category_admin' => $category_name,
 
 //            'jobs' => $this->whenLoaded('jobs')
         ];
