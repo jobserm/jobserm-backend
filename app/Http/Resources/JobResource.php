@@ -22,6 +22,13 @@ class JobResource extends JsonResource
         $users = UserResource::collection($this->users)->count();
         $category_name = Category::where('id', '=', $this->id)->value('category_name');
         $image = Image::where('job_id', '=', $this->id)->get();
+        $selected = [];
+        foreach ($this->users as $user) {
+            if ($user->pivot->is_selected === 1) {
+                array_push($selected, $user);
+            }
+        }
+
         return [
             'id' => $this->id,
             'compensation' => $this->compensation,
@@ -39,7 +46,8 @@ class JobResource extends JsonResource
             'user_id' => $this->user_id,
             'catagory' => Category::where('id', '=', $this->id)->get(),
             'category_name' => $this->categories,
-            'image' => $image
+            'image' => $image,
+            'selected_user' => $selected,
 
 //            'jobs' => $this->whenLoaded('jobs')
         ];
