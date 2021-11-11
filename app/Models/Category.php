@@ -13,6 +13,6 @@ class Category extends Model
     protected $fillable = ['category_name'];
 
     public function jobs() {
-        return $this->belongsToMany(Job::class)->withTimestamps()->withPivot('job_id');
+        return $this->belongsToMany(Job::class)->withTimestamps();
     }
 }
