@@ -13,6 +13,10 @@ use Illuminate\Validation\Rule;
 
 class CategoryController extends Controller
 {
+    public function __construct() {
+        $this->middleware('auth:api');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -28,7 +32,7 @@ class CategoryController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  CategoryRequest  $request
-     * @return \Illuminate\Http\Response
+     * @return Category
      */
     public function store(CategoryRequest $request)
     {
@@ -47,7 +51,6 @@ class CategoryController extends Controller
        $category->category_name = $request->input('category_name');
        $category->save();
 
-       $jobs = $request->input('job');
        return $category;
     }
 
@@ -82,13 +85,10 @@ class CategoryController extends Controller
             ],
         ])->validate();
 
-       $category = new Category();
-       $category->category_name = $request->input('category_name');
-       $category->save();
+        $category->category_name = $request->input('category_name');
+        $category->save();
 
-       $jobs = $request->input('job');
-       return $category;
-
+        return $category;
     }
 
     /**
@@ -103,6 +103,6 @@ class CategoryController extends Controller
 
         $category->delete();
 
-        return response()-json(['message' => 'Successfully deleted']);
+        return response()->json(['message' => 'Successfully deleted']);
     }
 }

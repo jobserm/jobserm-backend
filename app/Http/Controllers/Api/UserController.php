@@ -16,9 +16,9 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-//    public function __construct() {
-//        $this->middleware('auth:api');
-//    }
+    public function __construct() {
+        $this->middleware('auth:api');
+    }
 
     public function index()
     {
@@ -130,5 +130,11 @@ class UserController extends Controller
     public function getUserIsPublish() {
         $users = User::get()->where('is_publish', 1);
         return UserResource::collection($users);
+    }
+
+    public function getAllUsers(Request $request) {
+        $users = User::whereRole('USER')->get();
+
+        return $users;
     }
 }
