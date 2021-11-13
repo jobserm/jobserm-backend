@@ -34,6 +34,9 @@ Route::apiResource('images', \App\Http\Controllers\Api\ImageController::class);
 Route::post('/users/{user}/first-register', [\App\Http\Controllers\Api\UserController::class, 'firstRegister'])
     ->middleware('api')->name('users.firstRegister');
 
+ Route::post('/users/{user}/edit-user', [\App\Http\Controllers\Api\UserController::class, 'editUser'])
+     ->middleware('api')->name('users.editUser');
+
 Route::post('/jobs/{job}/apply-job', [\App\Http\Controllers\Api\JobController::class, 'userApplyJob'])
     ->middleware('api')->name('jobs.userApplyJob');
 

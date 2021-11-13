@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -136,5 +137,53 @@ class UserController extends Controller
         $users = User::whereRole('USER')->get();
 
         return $users;
+    }
+    public function editUser(Request $request) {
+
+        $user = User::findOrFail($request->input('id'));
+
+        $validator = Validator::make($request->all(), [
+            'birthdate' => ['required', 'string', 'regex:/^[0-9]{4}-[0-9]{2}-[0-9]{2}/'],
+//            'gender' => ['required', 'string'],
+            // role,
+            'address' => ['required', 'string'],
+            'facebook' => ['string'],
+            'line' => ['string'],
+            'about_me' => ['required', 'string'],
+            'skill' => ['required', 'string'],
+            'firstname' => 'required|string|between:2,100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'password' => 'required|string|confirmed|min:8',
+            'lastname' => ['required', 'string', 'max:255'],
+            'phone' => ['required', 'string', 'min:9', 'max:10', 'regex:/^0[0-9]{9}/'],
+            'username' => ['required', 'string', 'unique:App\Models\User,username'],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+
+        $user->name = $request->input("firstname");
+        $user->email = $request->input("email");
+        $user->password = Hash::make($request->input("password"));
+//        $user->password_confimation = Hash::make($request->input("password"));
+        $user->lastname = $request->input("lastname");
+        $user->phone = $request->input("phone");
+        $user->username = $request->input("username");
+        $user->birthdate = $request->input('birthdate');
+        // $user->gender = $request->input('gender');
+        $user->address = $request->input('address');
+        $user->facebook = $request->input('facebook');
+        $user->line = $request->input('line');
+        $user->about_me = $request->input('about_me');
+        $user->skill = $request->input('skill');
+        $user->is_publish = $request->input('is_publish') || 0;
+
+        $user->save();
+
+        return response()->json([
+            'message' => 'User successfully registered',
+            'user' => $user
+        ], 201);
     }
 }

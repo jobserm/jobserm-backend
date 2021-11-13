@@ -30,6 +30,8 @@ class UserResource extends JsonResource
             'skill' => $this->skill,
             'activation' => $this->activation,
             'info' => $this->jobs,
+            'username' => $this->username,
+            'password' => $this->password,
             'review' => Review::where('user_id', '=', $this->id)->avg('rating'),
             'img_url' => $this->img_url
         ];

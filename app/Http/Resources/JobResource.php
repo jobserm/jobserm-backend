@@ -4,6 +4,7 @@ namespace App\Http\Resources;
 
 use App\Models\Category;
 use App\Models\Image;
+use App\Models\Review;
 use App\Models\User;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -29,6 +30,16 @@ class JobResource extends JsonResource
             }
         }
 
+        if(count($selected) > 0)
+        {
+            $user_id = $selected[0]['id'];
+        }
+        else{
+            $user_id = 0;
+        }
+
+
+
         return [
             'id' => $this->id,
             'compensation' => $this->compensation,
@@ -48,6 +59,7 @@ class JobResource extends JsonResource
             'category_name' => $this->categories,
             'image' => $image,
             'selected_user' => $selected,
+            'review' => Review::where('user_id', '=', $user_id)->avg('rating'),
 
 //            'jobs' => $this->whenLoaded('jobs')
         ];
